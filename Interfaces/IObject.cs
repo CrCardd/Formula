@@ -1,0 +1,135 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing.Drawing2D;
+using Formula.Enum;
+using Formula.Math;
+using Formula.Scene;
+
+namespace Formula.Interfaces;
+
+
+public class IObject
+{
+    #region Private constants
+    public static int Size {get;set;} = 15;
+    #endregion
+    #region Private properties
+
+    private int version = 0;
+    private Vector2D position;
+    private Vector2D prevPosition;
+    private Color color;
+    private IBehavior? behavior;
+    private DirtyFlags dirtyFlag;
+    private Matrix tMatrix;
+    private Rectangle e;
+    private string? label;
+
+
+    #endregion
+    #region Properties setters
+
+    public Guid Id {get;} = Guid.NewGuid();
+    public int Version {get => version; set{version = value;}}
+
+    private void PosChange()
+        => Flags |= DirtyFlags.MoveDirty;   
+    public Vector2D Position {get => position;
+        set{
+            if (position == value)
+                return;
+            position = value;
+
+            SavePosition();
+            PosChange();
+        }
+    }
+    public Vector2D PrevPosition {get => prevPosition; private set{prevPosition = value;}}
+
+    private void ColorChange()
+        => Flags |= DirtyFlags.RenderDirty;
+    public Color Color {get => color; 
+        [MemberNotNull(nameof(color))]
+        set{
+            color = value;
+            ColorChange();
+        }
+    }
+    
+    private void BehaviorChange()
+        => Flags |= DirtyFlags.BehaviorDirty;
+    public IBehavior? Behavior {get => behavior;
+        set{
+            behavior = value;
+            BehaviorChange();
+        }
+    }
+    
+    public DirtyFlags Flags {get => dirtyFlag; 
+        [MemberNotNull(nameof(dirtyFlag))]
+        set{
+            dirtyFlag = value;
+            Version++;
+        }
+    }
+
+    public Rectangle E {get => e; private set {e = value;}}
+    
+    public string? Label {get => label;set{label = value;}}
+
+    #endregion
+    #region Engine Methods
+
+    [MemberNotNull(nameof(tMatrix))]
+    public void RecalculatePosition()
+    {
+        tMatrix = new Matrix();
+        tMatrix.Translate(Position.X * Size, Position.Y * Size);
+        Flags &= ~DirtyFlags.MoveDirty;
+    }
+    public void Draw(Graphics g)
+    {
+        if (Flags.HasFlag(DirtyFlags.MoveDirty))
+            RecalculatePosition();
+        var old = g.Transform;
+        g.Transform = tMatrix!;
+        g.FillRectangle(new SolidBrush(color), 0, 0, E.Width, E.Height);
+        g.Transform = old;
+    }
+    public void SavePosition() => PrevPosition = Position;
+    public void RestorePosition() => this.prevPosition = Position;
+    public void Update(Kingdon engine) => behavior?.Execute(this, engine);    
+
+    #endregion
+    #region User methods
+    public IObject(int x=0, int y=0, Color? color=null, IBehavior? behavior=null, string? label=null)
+    {
+        if(color == null)
+            color = Color.Green;
+            
+        E = new Rectangle(x, y, Size, Size);
+        Behavior = behavior;
+        Label = label;
+        SetPosition(x,y);
+        Color = (Color)color;
+        RecalculatePosition();
+    }
+    public IObject(Vector2D position, Color? color=null, IBehavior? behavior=null, string? label=null)
+    {
+        if(color == null)
+            color = Color.Green;
+            
+        E = new Rectangle(position.X, position.Y, Size, Size);
+        Behavior = behavior;
+        Label = label;
+        SetPosition(position);
+        Color = (Color)color;
+        RecalculatePosition();
+    }
+    public void SetPosition(int x, int y)
+        => Position = new Vector2D(x, y);
+    public void SetPosition(Vector2D position)
+        => Position = position;
+
+    #endregion
+}
+

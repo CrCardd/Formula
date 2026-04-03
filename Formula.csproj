@@ -1,22 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
+
     <TargetFramework>net9.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-
-
+    
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    
     <PackageId>Formula.Engine</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.4</Version>
     <Authors>Cristian Cardoso</Authors>
-    <Company></Company>
     <Description>Minimalist engine for Design Patterns class.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl></RepositoryUrl>
-    <PackageTags></PackageTags>
 
+    <Nullable>enable</Nullable>
 
   </PropertyGroup>
 

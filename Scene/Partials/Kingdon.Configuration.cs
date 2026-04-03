@@ -1,17 +1,17 @@
-using Formula.Interfaces;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Formula.Scene;
 
 partial class Kingdon
 {
-    public Dictionary<Guid, IObject> Objects = [];
-    private Dictionary<(int,int), IObject> GridObjects = [];
-    
     public void Loop(object? sender, EventArgs e)
     {
+        FrozenGridObjects = new(GridObjects);
+
         foreach(var obj in Objects.Values) obj.SavePosition();
         foreach(var obj in Objects.Values) obj.Update(this);
-
         MoveObjects();
         DestroyObjects();
         SpawnObjects();
@@ -25,6 +25,7 @@ partial class Kingdon
         foreach (var obj in Objects.Values)
             obj.Draw(e.Graphics);
         
-        e.Graphics.DrawString(Objects.Count.ToString(), new Font("Arial", 10, FontStyle.Bold), Brushes.White, 1, 1);
+        e.Graphics.DrawString(Objects.Count.ToString(), new Font("Arial", 10, FontStyle.Bold), Brushes.Black, 1, 1);
+        e.Graphics.DrawString(GridObjects.Count.ToString(), new Font("Arial", 10, FontStyle.Bold), Brushes.Black, 1, 11);
     }
 }

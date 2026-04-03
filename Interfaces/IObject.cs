@@ -1,5 +1,8 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Security.Cryptography.X509Certificates;
 using Formula.Enum;
 using Formula.Math;
 using Formula.Scene;
@@ -33,13 +36,12 @@ public class IObject
 
     private void PosChange()
         => Flags |= DirtyFlags.MoveDirty;   
-    public Vector2D Position {get => position;
-        set{
-            if (position == value)
-                return;
-            position = value;
 
-            SavePosition();
+    public int X {get => Position.X; [MemberNotNull(nameof(Position))]set{Position = new(value, Y);}}
+    public int Y {get => Position.Y; [MemberNotNull(nameof(Position))]set{Position = new(X, value);}}
+    private Vector2D Position {get => position;
+        set{
+            position = value;
             PosChange();
         }
     }
@@ -96,12 +98,12 @@ public class IObject
         g.Transform = old;
     }
     public void SavePosition() => PrevPosition = Position;
-    public void RestorePosition() => this.prevPosition = Position;
+    public void RestorePosition() => Position = PrevPosition;
     public void Update(Kingdon engine) => behavior?.Execute(this, engine);    
 
     #endregion
     #region User methods
-    public IObject(int x=0, int y=0, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public IObject(int x, int y, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;
@@ -109,7 +111,8 @@ public class IObject
         E = new Rectangle(x, y, Size, Size);
         Behavior = behavior;
         Label = label;
-        SetPosition(x,y);
+        X = x;
+        Y = y;
         Color = (Color)color;
         RecalculatePosition();
     }
@@ -121,15 +124,26 @@ public class IObject
         E = new Rectangle(position.X, position.Y, Size, Size);
         Behavior = behavior;
         Label = label;
-        SetPosition(position);
+        X = position.X;
+        Y = position.Y;
         Color = (Color)color;
         RecalculatePosition();
     }
+
+    [MemberNotNull(nameof(X))]
+    [MemberNotNull(nameof(Y))]
     public void SetPosition(int x, int y)
-        => Position = new Vector2D(x, y);
+    {
+        X = x;
+        Y = y;
+    }
+    [MemberNotNull(nameof(Y))]
+    [MemberNotNull(nameof(X))]
     public void SetPosition(Vector2D position)
-        => Position = position;
+    {
+        X = position.X;
+        Y = position.Y;
+    }
 
     #endregion
 }
-

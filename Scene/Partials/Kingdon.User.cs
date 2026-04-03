@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using Formula.Interfaces;
 using Formula.Math;
 
@@ -8,6 +13,11 @@ partial class Kingdon
     private Queue<IObject> toDestroy = [];
     private Queue<IObject> toSpawn = [];
     
+    private readonly int w;
+    private readonly int h;
+    public new int Width => w;
+    public new int Height => h;
+
     public Kingdon(int w, int h)
     {
         InitializeComponent();
@@ -15,11 +25,11 @@ partial class Kingdon
         this.MaximizeBox = false;
         this.DoubleBuffered = true;
 
-        this.Width = IObject.Size * w;
-        this.Height = IObject.Size * h;
-        this.ClientSize = new Size(this.Width,this.Height);
+        this.w = w;
+        this.h = h;
+        this.ClientSize = new Size(IObject.Size * w,IObject.Size * h);
     
-        System.Windows.Forms.Timer t = new();
+        Timer t = new();
         t.Interval = 16; // ~60 FPS
         t.Tick += (s, e) => Loop(s,e);
         
@@ -29,51 +39,70 @@ partial class Kingdon
 
     #region Base functions
     public void New(IObject obj){
-        int maxGridX = ClientSize.Width / IObject.Size;
-        int maxGridY = ClientSize.Height / IObject.Size;
         
-        if (obj.Position.X < 0 || obj.Position.X >= maxGridX) return;
-        if (obj.Position.Y < 0 || obj.Position.Y >= maxGridY) return;
+        if (obj.X < 0 || obj.X >= Width) return;
+        if (obj.Y < 0 || obj.Y >= Height) return;
 
         toSpawn.Enqueue(obj);
     }
     public void Destroy(IObject obj) => toDestroy.Enqueue(obj);
     public IReadOnlyCollection<IObject> GetObjects => Objects.Values.ToList();
-    #endregion
     
-    #region Util functions
-    public bool isFree(int x, int y) => GetPlace(x,y) != null;
-    public IObject? GetPlace(int x, int y) => Objects.Values.FirstOrDefault(o => o.Position.X == x && o.Position.Y == y);
-    public IObject? GetPlace(Vector2D position)
+    public void DestroyAll()
     {
-        if (GridObjects.TryGetValue((position.X, position.Y), out var obj)) return obj;
+        Objects = new();
+        GridObjects = new();
+    }
+
+    public void ApplyAll<T>(Action<T> apply) where T : IObject
+    {
+        foreach(var o in Objects.Values)
+            if(o is T t)
+                apply(t);   
+    }
+
+
+    #endregion
+    #region Util functions
+    public bool isFree(int x, int y) => GetPlace(x,y) == null;
+    public bool isValid(int x, int y) => x>=0 && x<50 && y>=0 && y < Height;
+    public IObject GetPlace(int x, int y) => FrozenGridObjects[(x, y)];
+    public T GetPlace<T>(int x, int y) where T : IObject => (FrozenGridObjects[(x, y)] as T)!;
+    public IObject? GetPlaceOrDefault(int x, int y) 
+    {
+        if (FrozenGridObjects.TryGetValue((x, y), out var obj)) return obj;
         return null;
     }
-    public Vector2D? GetRandomFreeNeighboorPlace(IWorld world, int x, int y)
+    public T? GetPlaceOrDefault<T>(int x, int y) where T : IObject
     {
-        List<Tuple<int,int>> offsets = [
-            new(-1,0),
-            new(0,1),
-            new(1,0),
-            new(0,-1),
-        ];
-        
-        return GetRandomFreeNeighboorPlace(world, offsets, y, x);
+        if (FrozenGridObjects.TryGetValue((x, y), out var obj)) return obj as T;
+        return null;
     }
-    public Vector2D? GetRandomFreeNeighboorPlace(IWorld world, List<Tuple<int,int>> offsets, int x, int y)
+    public IObject? GetPlace(Vector2D position)
+    {
+        if (FrozenGridObjects.TryGetValue((position.X, position.Y), out var obj)) return obj;
+        return null;
+    }
+    public Vector2D? GetRandomFreeNeighboorPlace(int x, int y)
+    {
+        List<Tuple<int, int>> offsets = [
+                new(-1, 0), new(1, 0), new(0, -1), new(0, 1)
+        ];
+        return GetRandomFreeNeighboorPlace(offsets, x, y);
+    }
+    public Vector2D? GetRandomFreeNeighboorPlace(List<Tuple<int,int>> offsets, int x, int y)
     {
         int lenght = offsets.Count;
         if(lenght <= 0)
             return null;
 
-        int r = Random.Shared.Next(0,lenght-1);
-        IObject? o = world.GetPlace(y+offsets[r].Item1, x+offsets[r].Item2);
-
-        if(o is null)
-            return new(y+offsets[r].Item1, x+offsets[r].Item2);
+        int r = Random.Shared.Next(0,lenght);
+        
+        if(GetPlace(x+offsets[r].Item1, y+offsets[r].Item2) == null)
+            return new(x+offsets[r].Item1, y+offsets[r].Item2);
 
         offsets.RemoveAt(r);
-        return GetRandomFreeNeighboorPlace(world, offsets, x, y);
+        return GetRandomFreeNeighboorPlace(offsets, x, y);
     }
     
     #endregion

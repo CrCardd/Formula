@@ -1,21 +1,41 @@
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Formula.Enum;
+using Formula.Interfaces;
 
 namespace Formula.Scene;
 
 partial class Kingdon
 {
+    public Dictionary<Guid, IObject> Objects = [];
+    private Dictionary<(int,int), IObject> GridObjects = [];
+    private Dictionary<(int,int), IObject> FrozenGridObjects = [];
+    
     public void MoveObjects()
     {   
-        var toMove = Objects.Values.Where(o => (o.Flags & DirtyFlags.MoveDirty) != DirtyFlags.None).ToList();
+        var toMove = Objects.Values.Where(o => (o.Flags & DirtyFlags.MoveDirty) != DirtyFlags.None).ToList();;
 
         foreach(var move in toMove)
         {
 
-            var targetPos = (move.Position.X, move.Position.Y);
-            move.Flags &= ~DirtyFlags.MoveDirty;
+            if (move.X < 0 || move.X >= Width || move.Y < 0 || move.Y >= Height)
+            {
+                throw new Exception($@"
+                =========Index out of map!=========
+                Object
+                X - {move.X,-5} | Y - {move.Y} 
 
-            if(GridObjects.Keys.Contains(targetPos))
+                Map
+                Width - {Width,-5} | Height - {Height} 
+                ");
+                // move.RestorePosition(); 
+                // continue;
+            }
+
+            var targetPos = (move.X, move.Y);
+            if (GridObjects.TryGetValue(targetPos, out var occupant) && occupant != move)
             {
                 move.RestorePosition();
                 continue;
@@ -31,7 +51,7 @@ partial class Kingdon
         while(toDestroy.Count > 0)
         {
             var obj = toDestroy.Dequeue();
-            GridObjects.Remove((obj.Position.X, obj.Position.Y));
+            GridObjects.Remove((obj.PrevPosition.X, obj.PrevPosition.Y));
             Objects.Remove(obj.Id);
         }
     }
@@ -40,10 +60,10 @@ partial class Kingdon
         while(toSpawn.Count > 0)
         {
             var spawn = toSpawn.Dequeue();
-            var targetPos = (spawn.Position.X, spawn.Position.Y);
+            var targetPos = (spawn.X, spawn.Y);
             if(GridObjects.Keys.Contains(targetPos)) continue;
             Objects.Add(spawn.Id, spawn);
-            GridObjects.Add((spawn.Position.X, spawn.Position.Y), spawn);
+            GridObjects.Add((spawn.X, spawn.Y), spawn);
         }
         toSpawn.Clear();
     }

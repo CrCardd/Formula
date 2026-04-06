@@ -22,4 +22,20 @@ partial class Kingdon
         if (GlobalHotkeys.TryGetValue(e.KeyCode, out var action))
             action.Invoke();
     }
+
+    private Dictionary<string, bool> Flags = [];
+    public void SetFlag(string key, bool value)
+    {
+        if(Flags.Keys.Contains(key))
+            Flags[key] = value;
+        else
+            Flags.Add(key,value);
+        
+    }
+    public bool GetFlag(string key)
+    {
+        if(Flags.TryGetValue(key, out bool v))
+            return v;
+        return false;   
+    }
 }

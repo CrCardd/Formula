@@ -8,9 +8,7 @@ partial class Kingdon
 {
     public void Loop(object? sender, EventArgs e)
     {
-        FrozenGridObjects = new(GridObjects);
-
-        foreach(var obj in Objects.Values) obj.SavePosition();
+        foreach(var obj in Objects.Values) obj.SyncShadow();
         foreach(var obj in Objects.Values) obj.Update(this);
         MoveObjects();
         DestroyObjects();

@@ -64,23 +64,23 @@ partial class Kingdon
 
     #endregion
     #region Util functions
-    public bool isFree(int x, int y) => GetPlace(x,y) == null;
+    public bool isFree(int x, int y) => GetPlaceOrDefault(x,y) == null;
     public bool isValid(int x, int y) => x>=0 && x<50 && y>=0 && y < Height;
-    public IObject GetPlace(int x, int y) => FrozenGridObjects[(x, y)];
-    public T GetPlace<T>(int x, int y) where T : IObject => (FrozenGridObjects[(x, y)] as T)!;
+    public IObject GetPlace(int x, int y) => GridObjects[(x, y)].Shadow!;
+    public T GetPlace<T>(int x, int y) where T : IObject => (GridObjects[(x, y)].Shadow as T)!;
     public IObject? GetPlaceOrDefault(int x, int y) 
     {
-        if (FrozenGridObjects.TryGetValue((x, y), out var obj)) return obj;
+        if (GridObjects.TryGetValue((x, y), out var obj)) return obj.Shadow;
         return null;
     }
     public T? GetPlaceOrDefault<T>(int x, int y) where T : IObject
     {
-        if (FrozenGridObjects.TryGetValue((x, y), out var obj)) return obj as T;
+        if (GridObjects.TryGetValue((x, y), out var obj)) return obj.Shadow as T;
         return null;
     }
     public IObject? GetPlace(Vector2D position)
     {
-        if (FrozenGridObjects.TryGetValue((position.X, position.Y), out var obj)) return obj;
+        if (GridObjects.TryGetValue((position.X, position.Y), out var obj)) return obj.Shadow;
         return null;
     }
     public Vector2D? GetRandomFreeNeighboorPlace(int x, int y)
@@ -98,7 +98,7 @@ partial class Kingdon
 
         int r = Random.Shared.Next(0,lenght);
         
-        if(GetPlace(x+offsets[r].Item1, y+offsets[r].Item2) == null)
+        if(GetPlaceOrDefault(x+offsets[r].Item1, y+offsets[r].Item2) == null)
             return new(x+offsets[r].Item1, y+offsets[r].Item2);
 
         offsets.RemoveAt(r);

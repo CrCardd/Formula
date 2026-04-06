@@ -11,7 +11,6 @@ partial class Kingdon
 {
     public Dictionary<Guid, IObject> Objects = [];
     private Dictionary<(int,int), IObject> GridObjects = [];
-    private Dictionary<(int,int), IObject> FrozenGridObjects = [];
     
     public void MoveObjects()
     {   

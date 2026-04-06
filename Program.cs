@@ -7,6 +7,25 @@ namespace A;
 
 static class Program
 {
+    // [STAThread]
+    // static void Main()
+    // {
+    //     ApplicationConfiguration.Initialize();
+
+    //     var engine = new Kingdon(50,50);
+
+    //     engine.OnGridClick = (x,y) =>
+    //     {
+    //         engine.New(new IObject(x,y, behavior: new S()));
+    //     };
+
+    //     engine.GlobalHotkeys.Add(Keys.R, engine.DestroyAll);
+
+    //     Application.Run(engine);
+    // }   
+
+
+
     [STAThread]
     static void Main()
     {
@@ -23,7 +42,8 @@ static class Program
             cell.Alive = !cell.Alive;
         };
 
-        engine.GlobalHotkeys.Add(Keys.R, () => engine.ApplyAll<Cell>(c => c.Alive = false));
+        engine.GlobalHotkeys.Add(Keys.R, () => engine.ApplyAll<Cell>(c => c.Alive = true));
+        engine.GlobalHotkeys.Add(Keys.Space, () => engine.SetFlag("run", !engine.GetFlag("run")));
 
         Application.Run(engine);
     }   

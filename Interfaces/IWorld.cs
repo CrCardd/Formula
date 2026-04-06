@@ -24,4 +24,7 @@ public interface IWorld
     public void DestroyAll();
     public void ApplyAll<T>(Action<T> apply) where T : IObject;
 
+    public void SetFlag(string key, bool value);
+    public bool GetFlag(string key);
+
 }

@@ -3,12 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Formula.Enum;
+using Formula.Interfaces;
 using Formula.Math;
 using Formula.Scene;
 
-namespace Formula.Interfaces;
+namespace Formula.Objects;
 
 
 public class IObject

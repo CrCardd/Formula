@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Formula.Math;
+using Formula.Objects;
 
 namespace Formula.Interfaces;
 

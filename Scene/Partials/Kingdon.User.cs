@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Formula.Interfaces;
 using Formula.Math;
+using Formula.Objects;
 
 namespace Formula.Scene;
 

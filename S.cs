@@ -1,5 +1,6 @@
 using System.Windows.Forms.Design.Behavior;
 using Formula.Interfaces;
+using Formula.Objects;
 
 public class S : IBehavior
 {

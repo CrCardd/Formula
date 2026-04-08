@@ -35,9 +35,8 @@ public class C : Behavior<Cell>
             if(n < 2 || n > 3)
                 obj.Alive = false;
         if(!obj.Alive)
-            if(n == 3)
-            {      
+            if(n == 3)      
                 obj.Alive = true;
-            }
+            
     }
 }

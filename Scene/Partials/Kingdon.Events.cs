@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Formula.Interfaces;
+using Formula.Objects;
 
 namespace Formula.Scene;
 

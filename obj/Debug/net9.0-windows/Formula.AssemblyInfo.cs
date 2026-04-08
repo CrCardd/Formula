@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Minimalist engine for Design Patterns class.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.4.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.4+a8053fe3e9f92d0dafa21eab688e935b2005d5e8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.4+10a30ce3bec889aa48c9ba605926c897f7afe4fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("Formula")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Formula")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.4.0")]

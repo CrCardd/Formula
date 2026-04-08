@@ -1,3 +1,5 @@
+using Formula.Objects;
+
 namespace Formula.Interfaces;
 
 public interface IBehavior

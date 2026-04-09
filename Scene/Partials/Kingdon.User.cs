@@ -18,27 +18,18 @@ partial class Kingdon
     private readonly int h;
     public new int Width => w;
     public new int Height => h;
-
-    public Kingdon(int w, int h)
-    {
-        InitializeComponent();
-        this.FormBorderStyle = FormBorderStyle.FixedSingle;
-        this.MaximizeBox = false;
-        this.DoubleBuffered = true;
-
-        this.w = w;
-        this.h = h;
-        this.ClientSize = new Size(IObject.Size * w,IObject.Size * h);
     
-        Timer t = new();
-        t.Interval = 16; // ~60 FPS
-        t.Tick += (s, e) => Loop(s,e);
-        
-        t.Start();
-
+    public static IScene GetInstance(int w, int h)
+    {
+        if (isntance == null)
+                lock (_padlock)
+                    if (isntance == null)   
+                        isntance = new Kingdon(w,h);
+        return isntance;
     }
 
     #region Base functions
+
     public void New(IObject obj){
         
         if (obj.X < 0 || obj.X >= Width) return;
@@ -48,13 +39,11 @@ partial class Kingdon
     }
     public void Destroy(IObject obj) => toDestroy.Enqueue(obj);
     public IReadOnlyCollection<IObject> GetObjects => Objects.Values.ToList();
-    
     public void DestroyAll()
     {
         Objects = new();
         GridObjects = new();
     }
-
     public void ApplyAll<T>(Action<T> apply) where T : IObject
     {
         foreach(var o in Objects.Values)
@@ -62,9 +51,9 @@ partial class Kingdon
                 apply(t);   
     }
 
-
     #endregion
     #region Util functions
+
     public bool isFree(int x, int y) => GetPlaceOrDefault(x,y) == null;
     public bool isValid(int x, int y) => x>=0 && x<50 && y>=0 && y < Height;
     public IObject GetPlace(int x, int y) => GridObjects[(x, y)].Shadow!;

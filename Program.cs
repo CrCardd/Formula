@@ -31,25 +31,21 @@ static class Program
     {
         ApplicationConfiguration.Initialize();
 
-
-        var engine = new Kingdon(50,50);
-
-        engine.New(new Cell(23,24,behavior: new C(), alive: true));
-        engine.New(new Cell(24,24,behavior: new C(), alive: true));
-        engine.New(new Cell(25,24,behavior: new C(), alive: true));
+        var engine = Kingdon.GetInstance(50,50);
         for(int i=0; i<50; i++)
             for(int j=0; j<50; j++)
                 engine.New(new Cell(i,j,behavior: new C()));
 
-        engine.OnGridClick = (x,y) =>
+        engine.OnGridClick = (world,x,y) =>
         {
-            var cell = engine.GetPlace<Cell>(x,y);
+            var cell = world.GetPlace<Cell>(x,y);
             cell.Alive = !cell.Alive;
         };
 
         engine.GlobalHotkeys.Add(Keys.R, () => engine.ApplyAll<Cell>(c => c.Alive = true));
         engine.GlobalHotkeys.Add(Keys.Space, () => engine.SetFlag("run", !engine.GetFlag("run")));
 
-        Application.Run(engine);
+        
+        Application.Run(engine.scene);
     }   
 }

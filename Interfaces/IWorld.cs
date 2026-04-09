@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Formula.Math;
 using Formula.Objects;
 
@@ -28,4 +29,6 @@ public interface IWorld
     public void SetFlag(string key, bool value);
     public bool GetFlag(string key);
 
+    public Action<IWorld, int, int>? OnGridClick {get;set;}
+    public Dictionary<Keys, Action> GlobalHotkeys {get;set;}
 }

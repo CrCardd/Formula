@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Formula.Enum;
+using Formula.Math;
 using Formula.Objects;
 
 namespace Formula.Scene;
@@ -65,6 +66,27 @@ partial class Kingdon
             GridObjects.Add((spawn.X, spawn.Y), spawn);
         }
         toSpawn.Clear();
+    }
+
+
+
+
+    public IObject GetRealPlace(int x, int y) => GridObjects[(x, y)];
+    public T GetRealPlace<T>(int x, int y) where T : IObject => (GridObjects[(x, y)] as T)!;
+    public IObject? GetRealPlaceOrDefault(int x, int y) 
+    {
+        if (GridObjects.TryGetValue((x, y), out var obj)) return obj;
+        return null;
+    }
+    public T? GetRealPlaceOrDefault<T>(int x, int y) where T : IObject
+    {
+        if (GridObjects.TryGetValue((x, y), out var obj)) return obj as T;
+        return null;
+    }
+    public IObject? GetRealPlace(Vector2D position)
+    {
+        if (GridObjects.TryGetValue((position.X, position.Y), out var obj)) return obj;
+        return null;
     }
 
 }

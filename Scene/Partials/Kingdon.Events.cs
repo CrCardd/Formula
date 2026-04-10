@@ -1,9 +1,9 @@
 using Formula.Interfaces;
+using Formula.Math;
 using Formula.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -12,16 +12,23 @@ namespace Formula.Scene;
 partial class Kingdon
 {
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Action<IWorld, int, int>? OnMousePaint {get;set;}
+    public Action<IWorld, double, double>? MousePaint {get;set;}
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Dictionary<Keys, Action<IWorld>> GlobalHotkeys {get;set;} = [];
+    public new Action<IWorld, double, double>? MouseDown {get;set;}
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new Action<IWorld, double, double>? MouseUp {get;set;}
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new Action<IWorld, double, double>? MouseMove {get;set;}
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Dictionary<Keys, Action<IUser>> GlobalHotkeys {get;set;} = [];
 
     private bool isMousePressed = false;
-    private HashSet<(double,double)> passed = [];
+    private HashSet<(int,int)> passed = [];
     protected override void OnMouseDown(MouseEventArgs e)
     {
+        var pos = Coords(e);
         isMousePressed = true;
-        InvokeOnMousePaint(e);
+        InvokeOnMousePaint(e,pos);
     }
     protected override void OnMouseUp(MouseEventArgs e)
     {
@@ -30,23 +37,24 @@ partial class Kingdon
     }
     protected override void OnMouseMove(MouseEventArgs e)
     {
-        InvokeOnMousePaint(e);
+        var pos = Coords(e);
+        InvokeOnMousePaint(e,pos);
     }
-    public void InvokeOnMousePaint(MouseEventArgs e)
+
+    public Vector2D Coords(MouseEventArgs e) => new(e.X / IObject.Size, e.Y / IObject.Size);
+    public void InvokeOnMousePaint(MouseEventArgs e, Vector2D pos)
     {
         if(!isMousePressed)
             return;
-        int gridX = e.X / IObject.Size;
-        int gridY = e.Y / IObject.Size;
 
-        if(!isValid(gridX,gridY))
+        if(!isValid(pos.X,pos.Y))
             return;
-        if(passed.Contains((gridX, gridY)))
+        if(passed.Contains(((int)pos.X, (int)pos.Y)))
             return;
         
         var rawWorld = new RawKingdon(this);
-        OnMousePaint?.Invoke(rawWorld, gridX, gridY);
-        if(!isFree(gridX,gridY)) passed.Add((gridX, gridY));
+        MousePaint?.Invoke(rawWorld, pos.X, pos.Y);
+        if(!isFree(pos.X,pos.Y)) passed.Add(((int)pos.X, (int)pos.Y));
     }
 
 

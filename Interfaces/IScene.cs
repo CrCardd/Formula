@@ -1,3 +1,4 @@
 namespace Formula.Interfaces;
 
-public interface IScene : IWorld, IFunction{}
+public interface IUser : IWorld, IEvents{}
+public interface IControl : IUser, IFunction{}

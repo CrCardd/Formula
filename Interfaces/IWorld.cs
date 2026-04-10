@@ -23,8 +23,9 @@ public interface IWorld
     public T? GetPlaceOrDefault<T>(double x, double y) where T : IObject;
     public Vector2D? GetRandom4FreeNeighboorPlace(double x, double y);
     public Vector2D? GetRandom8FreeNeighboorPlace(double x, double y);
+    public void ResetWorld();
 
-    public void DestroyAll();
+    public void DestroyAllObjects();
     public void ApplyAll<T>(Action<T> apply) where T : IObject;
 
     public void SetFlag(string key, bool value);

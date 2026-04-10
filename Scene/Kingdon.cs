@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Formula.Scene;
 
-public partial class Kingdon : Form, IScene
+public partial class Kingdon : Form, IControl
 {
     public void Run() => Application.Run(this);   
 }

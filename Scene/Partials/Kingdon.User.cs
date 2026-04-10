@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using Formula.Interfaces;
 using Formula.Math;
 using Formula.Objects;
@@ -19,7 +17,7 @@ partial class Kingdon
     public new int Width => w;
     public new int Height => h;
     
-    public static Kingdon GetInstance(int w, int h, string? label = null)
+    public static IControl GetInstance(int w, int h, string? label = null)
     {
         if (instance == null)
                 lock (_padlock)
@@ -42,7 +40,7 @@ partial class Kingdon
     }
     public void Destroy(IObject obj) => toDestroy.Enqueue(obj);
     public IReadOnlyCollection<IObject> GetObjects => Objects.Values.ToList();
-    public void DestroyAll()
+    public void DestroyAllObjects()
     {
         Objects = new();
         GridObjects = new();
@@ -120,6 +118,16 @@ partial class Kingdon
 
         offsets.RemoveAt(r);
         return GetRandom8FreeNeighboorPlace(offsets, x, y);
+    }
+
+    public void ResetWorld()
+    {
+        DestroyAllObjects();
+        MouseDown = null;
+        MouseUp = null;
+        MousePaint = null;
+        MousePaint = null;
+        GlobalHotkeys.Clear();
     }
     
     #endregion

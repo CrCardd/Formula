@@ -1,18 +1,32 @@
+using System;
+using Formula.Interfaces;
 using Formula.Objects;
-
-namespace Formula.Interfaces;
 
 public interface IBehavior
 {
-    public void Execute(IObject obj, IWorld world);
+    void Execute(IObject obj, IWorld world, double t);
 }
-
 public abstract class Behavior<T> : IBehavior where T : IObject
 {
-    public abstract void Execute(T obj, IWorld world);
-
-    void IBehavior.Execute(IObject obj, IWorld world)
+    public virtual void Execute(T obj, IWorld world) 
+    => throw new NotImplementedException("Você deve implementar pelo menos uma sobrecarga de Execute.");
+    
+    public virtual void Execute(T obj, IWorld world, double t)
+    => Execute(obj, world);
+    
+    void IBehavior.Execute(IObject obj, IWorld world, double t)
     {
-        if(obj is T t) Execute(t, world);
+        if (obj is T v) Execute(v, world, t);
     }
+}
+public abstract class Behavior : IBehavior
+{
+    public virtual void Execute(IObject obj, IWorld world) 
+    => throw new NotImplementedException("Você deve implementar pelo menos uma sobrecarga de Execute.");
+    
+    public virtual void Execute(IObject obj, IWorld world, double t)
+    => Execute(obj, world);
+    
+    void IBehavior.Execute(IObject obj, IWorld world, double t)
+    => Execute(obj, world, t);
 }

@@ -1,6 +1,7 @@
+using System;
 using Formula.Interfaces;
 
-public class C : Behavior<Cell>
+public class CC : Behavior<Cell>
 {
     public int CountNeighborhood(IWorld world, double x, double y)
     {
@@ -32,8 +33,12 @@ public class C : Behavior<Cell>
 
         int n = CountNeighborhood(world, obj.X, obj.Y);
         if(obj.Alive)
-            if(n < 2 || n > 3)
+        {
+            if(n < 2 || n > 5)
                 obj.Alive = false;
+            if(Random.Shared.Next(1,25) == 1)
+                obj.Alive = true;
+        }
         if(!obj.Alive)
             if(n == 3)      
                 obj.Alive = true;

@@ -7,8 +7,10 @@ namespace Formula.Scene;
 
 partial class Kingdon
 {
-    private static Kingdon? isntance = null;
+    private static Kingdon? instance = null;
     private static readonly object _padlock = new object();
+
+    private readonly Timer timer; 
     public static Kingdon Instance
     {
         get
@@ -16,9 +18,8 @@ partial class Kingdon
             throw new InvalidOperationException("Kingdon must be initialized by GetInstance(w, h) before access.");
         }
     }
-    private Kingdon(int w, int h)
+    private Kingdon(int w, int h, string label)
     {   
-        ApplicationConfiguration.Initialize();
         this.InitializeComponent();
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
         this.MaximizeBox = false;
@@ -26,20 +27,21 @@ partial class Kingdon
 
         this.w = w;
         this.h = h;
+        this.Text = label;
 
-        this.ClientSize = new Size(IObject.Size * w,IObject.Size * h);
+        this.ClientSize = new Size(IObject.Size * w ,IObject.Size * h);
     
-        System.Windows.Forms.Timer t = new();
-        t.Interval = 16; // ~60 FPS
-        t.Tick += this.Loop;
-        
-        t.Start();
+        Timer t = new();
+        this.timer = t;
+        timer.Interval = 16; // ~60 FPS
+        timer.Tick += this.Loop;
+        timer.Start();
     }
 
     public void Loop(object? sender, EventArgs e)
     {
         foreach(var obj in Objects.Values) obj.SyncShadow();
-        foreach(var obj in Objects.Values) obj.Update(this);
+        foreach(var obj in Objects.Values) obj.Update(this, (double)timer.Interval/1000.0);
         MoveObjects();
         DestroyObjects();
         SpawnObjects();

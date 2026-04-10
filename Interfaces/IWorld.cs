@@ -15,13 +15,14 @@ public interface IWorld
     int Height {get;}
     IReadOnlyCollection<IObject> GetObjects { get; }
     
-    public bool isFree(int x, int y);
-    public bool isValid(int x, int y);
-    public IObject GetPlace(int x, int y);
-    public T GetPlace<T>(int x, int y) where T : IObject;
-    public IObject? GetPlaceOrDefault(int x, int y);
-    public T? GetPlaceOrDefault<T>(int x, int y) where T : IObject;
-    public Vector2D? GetRandomFreeNeighboorPlace(int x, int y);
+    public bool isFree(double x, double y);
+    public bool isValid(double x, double y);
+    public IObject GetPlace(double x, double y);
+    public T GetPlace<T>(double x, double y) where T : IObject;
+    public IObject? GetPlaceOrDefault(double x, double y);
+    public T? GetPlaceOrDefault<T>(double x, double y) where T : IObject;
+    public Vector2D? GetRandom4FreeNeighboorPlace(double x, double y);
+    public Vector2D? GetRandom8FreeNeighboorPlace(double x, double y);
 
     public void DestroyAll();
     public void ApplyAll<T>(Action<T> apply) where T : IObject;
@@ -29,6 +30,5 @@ public interface IWorld
     public void SetFlag(string key, bool value);
     public bool GetFlag(string key);
 
-    public Action<IWorld, int, int>? OnGridClick {get;set;}
-    public Dictionary<Keys, Action> GlobalHotkeys {get;set;}
+    public bool IsKeyDown(Keys key);
 }

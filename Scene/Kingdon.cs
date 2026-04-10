@@ -6,6 +6,5 @@ namespace Formula.Scene;
 
 public partial class Kingdon : Form, IScene
 {
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Form scene {get;set;} = Instance;
+    public void Run() => Application.Run(this);   
 }

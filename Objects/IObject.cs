@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using Formula.Enum;
-using Formula.Interfaces;
 using Formula.Math;
 using Formula.Scene;
 
@@ -38,11 +37,10 @@ public class IObject
     private void PosChange()
         => Flags |= DirtyFlags.MoveDirty;   
 
-    public int X {get => Position.X; [MemberNotNull(nameof(Position))]set{Position = new(value, Y);}}
-    public int Y {get => Position.Y; [MemberNotNull(nameof(Position))]set{Position = new(X, value);}}
+    public double X {get => Position.X; [MemberNotNull(nameof(Position))]set{Position = new(value, Y);}}
+    public double Y {get => Position.Y; [MemberNotNull(nameof(Position))]set{Position = new(X, value);}}
     private Vector2D Position {get => position;
         set{
-            SavePosition();
             position = value;
             PosChange();
         }
@@ -89,23 +87,26 @@ public class IObject
     public void RecalculatePosition()
     {
         tMatrix = new Matrix();
-        tMatrix.Translate(Position.X * Size, Position.Y * Size);
+        tMatrix.Translate((int)Position.X * Size, (int)Position.Y * Size);
         Flags &= ~DirtyFlags.MoveDirty;
     }
+    
+    private SolidBrush brush = new(Color.White);
     public void Draw(Graphics g)
     {
+        brush.Color = color;
         if (Flags.HasFlag(DirtyFlags.MoveDirty))
             RecalculatePosition();
         var old = g.Transform;
         g.Transform = tMatrix!;
-        g.FillRectangle(new SolidBrush(color), 0, 0, E.Width, E.Height);
+        g.FillRectangle(brush, 0, 0, E.Width, E.Height);
         g.Transform = old;
     }
-    private void SavePosition() => PrevPosition = Position;
     public void RestorePosition() => Position = PrevPosition;
-    public void Update(Kingdon engine) => behavior?.Execute(this, engine);    
+    public void Update(Kingdon engine, double time) => behavior?.Execute(this, engine, time);    
     public void SyncShadow()
     {
+        PrevPosition = Position;
         if(Shadow == null) Shadow = (IObject)this.MemberwiseClone();
         foreach(var prop in this.GetType().GetProperties().Where(p => p.CanWrite))
             prop.SetValue(Shadow, prop.GetValue(this));
@@ -113,12 +114,12 @@ public class IObject
 
     #endregion
     #region User methods
-    public IObject(int x, int y, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public IObject(double x, double y, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;
             
-        E = new Rectangle(x, y, Size, Size);
+        E = new Rectangle((int)x, (int)y, Size, Size);
         Behavior = behavior;
         Label = label;
         X = x;
@@ -131,7 +132,7 @@ public class IObject
         if(color == null)
             color = Color.Green;
             
-        E = new Rectangle(position.X, position.Y, Size, Size);
+        E = new Rectangle((int)position.X, (int)position.Y, Size, Size);
         Behavior = behavior;
         Label = label;
         X = position.X;

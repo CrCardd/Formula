@@ -1,7 +1,7 @@
 using System.Drawing;
 using Formula.Objects;
 
-public class Ball : IObject
+public class Ball : BaseOBject
 {
     public double SpeedX;
     public double SpeedY;

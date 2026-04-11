@@ -29,7 +29,7 @@ partial class Kingdon
         this.h = h;
         this.Text = label;
 
-        this.ClientSize = new Size(IObject.Size * w ,IObject.Size * h);
+        this.ClientSize = new Size(Formula.Objects.BaseOBject.Size * w , Formula.Objects.BaseOBject.Size * h);
     
         Timer t = new();
         this.timer = t;

@@ -1,7 +1,4 @@
-using System;
-using System.Runtime.Remoting;
 using Formula.Interfaces;
-using Formula.Math;
 
 public class G : Behavior<Ball>
 {

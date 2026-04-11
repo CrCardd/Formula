@@ -1,5 +1,4 @@
 using Formula.Interfaces;
-using Formula.Math;
 using Formula.Objects;
 using System;
 using System.Collections.Generic;
@@ -12,49 +11,65 @@ namespace Formula.Scene;
 partial class Kingdon
 {
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Action<IWorld, double, double>? MousePaint {get;set;}
+    public Action<IWorld, MouseArgs>? MousePaint {get;set;}
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public new Action<IWorld, double, double>? MouseDown {get;set;}
+    public new Action<IWorld, MouseArgs>? MouseDown {get;set;}
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public new Action<IWorld, double, double>? MouseUp {get;set;}
+    public new Action<IWorld, MouseArgs>? MouseUp {get;set;}
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public new Action<IWorld, double, double>? MouseMove {get;set;}
+    public new Action<IWorld, MouseArgs>? MouseMove {get;set;}
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Dictionary<Keys, Action<IUser>> GlobalHotkeys {get;set;} = [];
 
     private bool isMousePressed = false;
     private HashSet<(int,int)> passed = [];
+    private Vector2D lastPosition = new(-1,-1);
     protected override void OnMouseDown(MouseEventArgs e)
     {
         var pos = Coords(e);
+        var ma = new MouseArgs(e,this,lastPosition);
         isMousePressed = true;
-        InvokeOnMousePaint(e,pos);
+        InvokeOnMousePaint(ma);
+
+        MouseDown?.Invoke(this,ma);
+        lastPosition = pos;
     }
     protected override void OnMouseUp(MouseEventArgs e)
     {
+        var pos = Coords(e);
+        var ma = new MouseArgs(e,this,lastPosition);
+        MouseUp?.Invoke(this,ma);
+
         isMousePressed = false;
         passed = [];
+        lastPosition = pos;
     }
     protected override void OnMouseMove(MouseEventArgs e)
     {
         var pos = Coords(e);
-        InvokeOnMousePaint(e,pos);
-    }
+        var ma = new MouseArgs(e,this,lastPosition);
+        MouseMove?.Invoke(this,ma);
 
-    public Vector2D Coords(MouseEventArgs e) => new(e.X / IObject.Size, e.Y / IObject.Size);
-    public void InvokeOnMousePaint(MouseEventArgs e, Vector2D pos)
+
+        if(lastPosition == pos)
+            return;
+        InvokeOnMousePaint(ma);
+        lastPosition = pos;
+    }
+    public Vector2D Coords(MouseEventArgs e) => new(e.X / BaseOBject.Size, e.Y / BaseOBject.Size);
+    public void InvokeOnMousePaint(MouseArgs e)
     {
         if(!isMousePressed)
             return;
 
-        if(!isValid(pos.X,pos.Y))
+        if(!isValid(e.Position.X,e.Position.Y))
             return;
-        if(passed.Contains(((int)pos.X, (int)pos.Y)))
+        if(passed.Contains(((int)e.Position.X, (int)e.Position.Y)))
             return;
         
         var rawWorld = new RawKingdon(this);
-        MousePaint?.Invoke(rawWorld, pos.X, pos.Y);
-        if(!isFree(pos.X,pos.Y)) passed.Add(((int)pos.X, (int)pos.Y));
+        MousePaint?.Invoke(rawWorld,e);
+        if(!isFree(e.Position.X,e.Position.Y)) passed.Add(((int)e.Position.X, (int)e.Position.Y));
     }
 
 

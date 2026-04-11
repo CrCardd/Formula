@@ -4,7 +4,7 @@ using Formula.Objects;
 
 public class M : Behavior
 {
-    public override void Execute(IObject obj, IWorld world)
+    public override void Execute(BaseOBject obj, IWorld world)
     {
         if(world.IsKeyDown(Keys.D))
             obj.X++;

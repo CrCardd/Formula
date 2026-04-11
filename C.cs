@@ -1,36 +1,14 @@
+using System.Linq;
 using Formula.Interfaces;
 
 public class C : Behavior<Cell>
 {
-    public int CountNeighborhood(IWorld world, double x, double y)
-    {
-        int n = 0;
-        if(world.isValid(x,y-1) && world.GetPlace<Cell>(x,y-1).Alive)
-            n++;
-        if(world.isValid(x,y+1) && world.GetPlace<Cell>(x,y+1).Alive)
-            n++;
-        if(world.isValid(x-1,y) && world.GetPlace<Cell>(x-1,y).Alive)
-            n++;
-        if(world.isValid(x+1,y) && world.GetPlace<Cell>(x+1,y).Alive)
-            n++;
-
-        if(world.isValid(x-1,y-1) && world.GetPlace<Cell>(x-1,y-1).Alive)
-            n++;
-        if(world.isValid(x+1,y-1) && world.GetPlace<Cell>(x+1,y-1).Alive)
-            n++;
-        if(world.isValid(x+1,y+1) && world.GetPlace<Cell>(x+1,y+1).Alive)
-            n++;
-        if(world.isValid(x-1,y+1) && world.GetPlace<Cell>(x-1,y+1).Alive)
-            n++;
-        
-        return n;
-    }
     public override void Execute(Cell obj, IWorld world)
     {
         if(!world.GetFlag("run"))
             return;
 
-        int n = CountNeighborhood(world, obj.X, obj.Y);
+        int n = world.NNeighborCells<Cell>(obj.X, obj.Y).Count(n => n.Alive);
         if(obj.Alive)
             if(n < 2 || n > 3)
                 obj.Alive = false;

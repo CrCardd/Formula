@@ -3,15 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Formula.Enum;
-using Formula.Math;
 using Formula.Objects;
 
 namespace Formula.Scene;
 
 partial class Kingdon
 {
-    public Dictionary<Guid, IObject> Objects = [];
-    private Dictionary<(int,int), IObject> GridObjects = [];
+    public Dictionary<Guid, BaseOBject> Objects = [];
+    private Dictionary<(int,int), BaseOBject> GridObjects = [];
     
     public void MoveObjects()
     {   
@@ -68,19 +67,19 @@ partial class Kingdon
 
 
 
-    public IObject GetRealPlace(double x, double y) => GridObjects[((int)x, (int)y)];
-    public T GetRealPlace<T>(double x, double y) where T : IObject => (GridObjects[((int)x, (int)y)] as T)!;
-    public IObject? GetRealPlaceOrDefault(double x, double y) 
+    public BaseOBject GetRealPlace(double x, double y) => GridObjects[((int)x, (int)y)];
+    public T GetRealPlace<T>(double x, double y) where T : BaseOBject => (GridObjects[((int)x, (int)y)] as T)!;
+    public BaseOBject? GetRealPlaceOrDefault(double x, double y) 
     {
         if (GridObjects.TryGetValue(((int)x, (int)y), out var obj)) return obj;
         return null;
     }
-    public T? GetRealPlaceOrDefault<T>(double x, double y) where T : IObject
+    public T? GetRealPlaceOrDefault<T>(double x, double y) where T : BaseOBject
     {
         if (GridObjects.TryGetValue(((int)x, (int)y), out var obj)) return obj as T;
         return null;
     }
-    public IObject? GetRealPlace(Vector2D position)
+    public BaseOBject? GetRealPlace(Vector2D position)
     {
         if (GridObjects.TryGetValue(((int)position.X, (int)position.Y), out var obj)) return obj;
         return null;

@@ -4,13 +4,11 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using Formula.Enum;
-using Formula.Math;
 using Formula.Scene;
 
 namespace Formula.Objects;
 
-
-public class IObject
+public class BaseOBject
 {
     #region Private constants
     public static int Size {get;set;} = 15;
@@ -78,7 +76,7 @@ public class IObject
     
     public string? Label {get => label;set{label = value;}}
     
-    public IObject? Shadow {get;set;}
+    public BaseOBject? Shadow {get;set;}
 
     #endregion
     #region Engine Methods
@@ -107,14 +105,14 @@ public class IObject
     public void SyncShadow()
     {
         PrevPosition = Position;
-        if(Shadow == null) Shadow = (IObject)this.MemberwiseClone();
+        if(Shadow == null) Shadow = (BaseOBject)this.MemberwiseClone();
         foreach(var prop in this.GetType().GetProperties().Where(p => p.CanWrite))
             prop.SetValue(Shadow, prop.GetValue(this));
     }
 
     #endregion
     #region User methods
-    public IObject(double x, double y, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public BaseOBject(double x, double y, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;
@@ -127,7 +125,7 @@ public class IObject
         Color = (Color)color;
         RecalculatePosition();
     }
-    public IObject(Vector2D position, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public BaseOBject(Vector2D position, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;

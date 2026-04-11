@@ -2,7 +2,7 @@ using System.Drawing;
 using Formula.Interfaces;
 using Formula.Objects;
 
-public class Cell : IObject
+public class Cell : BaseOBject
 {
     private bool alive = false;
 

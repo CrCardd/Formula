@@ -1,6 +1,6 @@
 using System;
 
-namespace Formula.Math;
+namespace Formula.Objects;
 
 public struct Vector2D(double x, double y)
 {
@@ -9,6 +9,10 @@ public struct Vector2D(double x, double y)
 
     public static Vector2D operator *(Vector2D v, double scalar)
         => new Vector2D(v.X * scalar, v.Y * scalar);
+    public static Vector2D operator +(Vector2D v, Vector2D b)
+        => new Vector2D(v.X+b.X, v.Y+b.Y);
+    public static Vector2D operator -(Vector2D v, Vector2D b)
+        => new Vector2D(v.X-b.X, v.Y-b.Y);
     
     public static bool operator ==(Vector2D a, Vector2D b)
         => a.Y == b.Y && a.X == b.X;

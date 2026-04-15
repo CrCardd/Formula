@@ -6,5 +6,6 @@ namespace Formula.Scene;
 
 public partial class Kingdon : Form, IControl
 {
+
     public void Run() => Application.Run(this);   
 }

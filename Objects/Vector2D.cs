@@ -24,4 +24,8 @@ public struct Vector2D(double x, double y)
     => obj is Vector2D other && this == other;
     public override int GetHashCode() 
         => HashCode.Combine(X, Y);
+
+    public static implicit operator Vector2D((double,double) source)
+        => new(source.Item1, source.Item2);
+    
 }

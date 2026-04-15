@@ -12,6 +12,8 @@ public interface IWorld
 
     int Width {get;}
     int Height {get;}
+    int? Depth {get;}
+    
     IReadOnlyCollection<BaseOBject> GetObjects { get; }
     
     public bool isValid(double x, double y);
@@ -23,12 +25,8 @@ public interface IWorld
     public IReadOnlyCollection<BaseOBject> RadiusAreaObjects(double x, double y, int n);
     public IReadOnlyCollection<T> NeighborObjects<T>(double x, double y, bool diagonal=false) where T : BaseOBject;
     public IReadOnlyCollection<BaseOBject> NeighborObjects(double x, double y, bool diagonal=false);
-    public IEnumerable<Vector2D> GetGrid(double x, double y, bool diagonal=false);
-
-    public void ResetWorld();
-
-    public void DestroyAllObjects();
-    public void ApplyAll<T>(Action<T> apply) where T : BaseOBject;
+    public Dictionary<Vector2D, IReadOnlyCollection<T>> GetGrid<T>(double x, double y, bool diagonal=false) where T : BaseOBject;
+    public Dictionary<Vector2D, IReadOnlyCollection<BaseOBject>> GetGrid(double x, double y, bool diagonal=false);
 
     public void SetFlag(string key, bool value);
     public bool GetFlag(string key);

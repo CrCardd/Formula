@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Formula.Objects;
 
@@ -11,14 +12,14 @@ partial class Kingdon
     private static readonly object _padlock = new object();
 
     private readonly Timer timer; 
-    public static Kingdon Instance
+    private static Kingdon Instance
     {
         get
         {
             throw new InvalidOperationException("Kingdon must be initialized by GetInstance(w, h) before access.");
         }
     }
-    private Kingdon(int w, int h, string label)
+    private Kingdon(int w, int h, int? z=null, string label="screen")
     {   
         this.InitializeComponent();
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -27,9 +28,10 @@ partial class Kingdon
 
         this.w = w;
         this.h = h;
+        this.z = z;
         this.Text = label;
 
-        this.ClientSize = new Size(Formula.Objects.BaseOBject.Size * w , Formula.Objects.BaseOBject.Size * h);
+        this.ClientSize = new Size(BaseOBject.Size * w , BaseOBject.Size * h);
     
         Timer t = new();
         this.timer = t;
@@ -46,7 +48,6 @@ partial class Kingdon
         MoveObjects();
         DestroyObjects();
         SpawnObjects();
-        
 
         this.Invalidate();
     }
@@ -54,7 +55,11 @@ partial class Kingdon
     protected override void OnPaint(PaintEventArgs e)
     {
         base.OnPaint(e);
-        foreach (var obj in Objects.Values)
-            obj.Draw(e.Graphics);
+        foreach (var position in GridObjects.Values)
+        {
+            var pos = position.OrderByDescending(p => p.Z);
+            foreach(var obj in pos)
+                obj.Draw(e.Graphics);
+        }
     }
 }

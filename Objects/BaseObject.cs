@@ -23,7 +23,6 @@ public class BaseOBject
     private DirtyFlags dirtyFlag;
     private Matrix tMatrix;
     private Rectangle e;
-    private string? label;
 
 
     #endregion
@@ -37,6 +36,8 @@ public class BaseOBject
 
     public double X {get => Position.X; [MemberNotNull(nameof(Position))]set{Position = new(value, Y);}}
     public double Y {get => Position.Y; [MemberNotNull(nameof(Position))]set{Position = new(X, value);}}
+    public int Z = 0;
+
     private Vector2D Position {get => position;
         set{
             position = value;
@@ -72,9 +73,8 @@ public class BaseOBject
         }
     }
 
-    public Rectangle E {get => e; private set {e = value;}}
-    
-    public string? Label {get => label;set{label = value;}}
+    public string? Label {get;set;}
+
     
     public BaseOBject? Shadow {get;set;}
 
@@ -95,7 +95,7 @@ public class BaseOBject
         RecalculatePosition();
         var old = g.Transform;
         g.Transform = tMatrix!;
-        g.FillRectangle(brush, 0, 0, E.Width, E.Height);
+        g.FillRectangle(brush, 0, 0, e.Width, e.Height);
         g.Transform = old;
     }
     public void RestorePosition() => Position = PrevPosition;
@@ -110,29 +110,31 @@ public class BaseOBject
 
     #endregion
     #region User methods
-    public BaseOBject(double x, double y, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public BaseOBject(double x, double y, int z=0, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;
             
-        E = new Rectangle((int)x, (int)y, Size, Size);
+        e = new Rectangle((int)x, (int)y, Size, Size);
         Behavior = behavior;
         Label = label;
         X = x;
         Y = y;
+        Z=0;
         Color = (Color)color;
         RecalculatePosition();
     }
-    public BaseOBject(Vector2D position, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public BaseOBject(Vector2D position, int z=0, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;
             
-        E = new Rectangle((int)position.X, (int)position.Y, Size, Size);
+        e = new Rectangle((int)position.X, (int)position.Y, Size, Size);
         Behavior = behavior;
         Label = label;
         X = position.X;
         Y = position.Y;
+        Z = z;
         Color = (Color)color;
         RecalculatePosition();
     }

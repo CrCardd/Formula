@@ -13,17 +13,19 @@ partial class Kingdon
     
     private readonly int w;
     private readonly int h;
+    private readonly int? z;
     public new int Width => w;
     public new int Height => h;
+    public int? Depth => z;
     
-    public static IControl GetInstance(int w, int h, string? label = null)
+    public static IControl GetInstance(int w, int h, int? z=null, string? label = null)
     {
         if (instance == null)
                 lock (_padlock)
                     if (instance == null)
                     {
                         ApplicationConfiguration.Initialize();   
-                        instance = new Kingdon(w,h, label ?? "Screen");
+                        instance = new Kingdon(w,h,z,label ?? "Screen");
                     }
         return instance;
     }
@@ -48,6 +50,7 @@ partial class Kingdon
             if(o is T t)
                 apply(t);   
     }
+    public void ApplyAll(Action<BaseOBject> apply) => ApplyAll<BaseOBject>(apply);
 
     public void ResetWorld()
     {

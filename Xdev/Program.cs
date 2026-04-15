@@ -5,42 +5,24 @@ using System.Windows.Forms;
 using Formula.Interfaces;
 using Formula.Objects;
 using Formula.Scene;
-using Microsoft.VisualBasic.Devices;
 
 namespace A;
 
 static class Program
 {
-    // [STAThread]
-    // static void Main()
-    // {
-    //     var engine = Kingdon.GetInstance(50,50);
-
-    //     engine.OnMousePaint = (iWorld,x,y) => iWorld.New(new IObject(x,y, behavior: new S()));
-    //     engine.GlobalHotkeys.Add(Keys.R, (world) => world.DestroyAll());
-
-    //     engine.Run();
-    // }   
-
-
-
     [STAThread]
     static void Main()
     {
-        int w = 30;
+        int w = 50;
         int h = w;
 
-        BaseOBject.Size = 30;
-        var engine = Kingdon.GetInstance(w,h,"NOMELEGAL");
+        BaseOBject.Size = 15;
+        var engine = Kingdon.GetInstance(w,h,2,"NOMELEGAL");
         
-        
-        SetGlobalMove(engine);
+        // SetGlobalMove(engine);
         // SetGameOfLife(engine);
-        // SetPaint(engine);
-        // engine.GlobalHotkeys.Add(Keys.Z, SetGameOfLife);
-        // engine.GlobalHotkeys.Add(Keys.X, SetGlobalMove);
-        // engine.GlobalHotkeys.Add(Keys.C, SetGravityBalls);
-        // engine.GlobalHotkeys.Add(Keys.V, SetSandJoke);
+        // SetSandJoke(engine);
+        // SetLig4(engine);
         
         engine.Run();
     }
@@ -56,9 +38,9 @@ static class Program
         
         engine.MouseDown = (world,e) => e.TargetObject<Cell>().First().Alive = true;
 
-        // engine.GlobalHotkeys.Add(Keys.R, (world) => {world.ApplyAll<Cell>(c => c.Alive = false); world.SetFlag("run", false);});
-        // engine.GlobalHotkeys.Add(Keys.Q, (world) => world.ApplyAll<Cell>(c => c.Behavior = new C()));
-        // engine.GlobalHotkeys.Add(Keys.W, (world) => world.ApplyAll<Cell>(c => c.Behavior = new CC()));
+        engine.GlobalHotkeys.Add(Keys.R, (world) => {world.ApplyAll<Cell>(c => c.Alive = false); world.SetFlag("run", false);});
+        engine.GlobalHotkeys.Add(Keys.Q, (world) => world.ApplyAll<Cell>(c => c.Behavior = new C()));
+        engine.GlobalHotkeys.Add(Keys.W, (world) => world.ApplyAll<Cell>(c => c.Behavior = new CC()));
         engine.GlobalHotkeys.Add(Keys.Space, (world) => world.SetFlag("run", !world.GetFlag("run")));
     }
 
@@ -69,9 +51,9 @@ static class Program
             (world,e) => 
             {
                 if(e.Button == MouseButtons.Left)
-                    world.New(new BaseOBject(e.Position.X, e.Position.Y, Color.Blue, new M()));
+                    world.New(new BaseOBject(e.Position.X, e.Position.Y, 0, Color.Blue, new M()));
                 if(e.Button == MouseButtons.Right)
-                    world.New(new BaseOBject(e.Position.X, e.Position.Y, Color.Gray));
+                    world.New(new BaseOBject(e.Position.X, e.Position.Y, 0, Color.Gray));
                 if(e.Button == MouseButtons.Middle)
                     if(e.TargetObject() is not null)
                         world.Destroy(e.TargetObject().First()!);
@@ -83,15 +65,72 @@ static class Program
     // public static void SetGravityBalls(IUser engine)
     // {
     //     engine.ResetWorld();
-    //     engine.MousePaint = (world,e) => world.New(new Ball(e.Position.X, e.Position.Y,50,0, behavior: new G()));
+    //     engine.MouseDown = (world,e) => world.New(new Ball(e.Position.X, e.Position.Y,50,0, behavior: new G()));
     //     engine.GlobalHotkeys.Add(Keys.R, (world) => world.DestroyAllObjects());
     // }
-    // public static void SetSandJoke(IUser engine)
-    // {
-    //     engine.ResetWorld();
-    //     engine.MousePaint = (world,e) => world.New(new BaseOBject(e.Position.X, e.Position.Y, behavior: new S()));
-    //     engine.GlobalHotkeys.Add(Keys.R, (world) => world.DestroyAllObjects());
-    // }
+    public static void SetLig4(IUser engine)
+    {
+        engine.ResetWorld();
+        engine.SetFlag("player", true);
+        engine.SetFlag("side", true);
+
+        engine.MouseDown = (world,e) => 
+        {
+            bool player = world.GetFlag("player");
+            Color player1;
+            Color player2;
+            int z;
+            if(engine.GetFlag("side"))
+            {
+
+                player1 = Color.Blue;
+                player2 = Color.Black;
+                z = 0;
+            }
+            else
+            {
+                player1 = Color.Black;
+                player2 = Color.Red;
+                z = 1;
+            }
+                
+            if(player)
+                world.New(new(e.Position.X, e.Position.Y,z,player1, new L()));
+            else
+                world.New(new(e.Position.X, e.Position.Y,z,player2, new L()));
+            
+            world.SetFlag("player", !world.GetFlag("player"));
+        };
+        engine.GlobalHotkeys.Add(Keys.Space, (world) => 
+            {
+                world.ApplyAll(obj =>
+                {
+                    Color color;
+                    bool side = world.GetFlag("side");
+                    if(side)
+                        if(obj.Color == Color.Blue)
+                            color = Color.Black;
+                        else
+                            color = Color.Red;
+                    else
+                        if(obj.Color == Color.Red)
+                            color = Color.Black;
+                        else
+                            color = Color.Blue;
+                    obj.Color = color;
+                });
+                world.SetFlag("side", !world.GetFlag("side"));
+            }
+        );
+            
+        engine.GlobalHotkeys.Add(Keys.R, (world) => world.DestroyAllObjects());
+    }
+    public static void SetSandJoke(IUser engine)
+    {
+        engine.ResetWorld();
+        engine.MouseDown = (world,e) => world.New(new BaseOBject(e.Position.X, e.Position.Y, behavior: new S()));
+        engine.GlobalHotkeys.Add(Keys.R, (world) => world.DestroyAllObjects());
+    }
     // public static void SetPaint(IUser engine)
     // {
     //     engine.ResetWorld();

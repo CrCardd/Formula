@@ -12,4 +12,8 @@ public interface IEvents
     public Action<IWorld, MouseArgs>? MouseUp {get;set;}
     public Action<IWorld, MouseArgs>? MouseMove {get;set;}
 
+    public void ApplyAll(Action<BaseOBject> apply);
+    public void ApplyAll<T>(Action<T> apply) where T : BaseOBject;
+    public void ResetWorld();
+    public void DestroyAllObjects();
 }

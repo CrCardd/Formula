@@ -10,7 +10,7 @@ namespace Formula.Scene;
 partial class Kingdon
 {
     public Dictionary<Guid, BaseOBject> Objects = [];
-    private Dictionary<(int,int), List<BaseOBject>> GridObjects = [];
+    private Dictionary<Vector2D, List<BaseOBject>> GridObjects = [];
     
     public void MoveObjects()
     {   
@@ -33,7 +33,15 @@ partial class Kingdon
 
             var targetPos = ((int)move.X, (int)move.Y);
             var prevPos = ((int)move.PrevPosition.X, (int)move.PrevPosition.Y);
-
+            if (
+                GridObjects.TryGetValue(targetPos, out var occupant) 
+                && (occupant.Contains(move)
+                || (Depth is not null && occupant.Count >= Depth))
+            )
+            {
+                move.RestorePosition();
+                continue;
+            }
             RemoveFromGridObjects(prevPos,move);
             SetOnGridObjects(targetPos, move);
 
@@ -55,21 +63,23 @@ partial class Kingdon
         while(toSpawn.Count > 0)
         {
             var spawn = toSpawn.Dequeue();
+            var targetPos = ((int)spawn.X, (int)spawn.Y);
+            var pos = GetPlaceOrDefault(spawn.X, spawn.Y);
+            if(pos is not null && Depth is not null && pos.Count >= Depth) continue;
 
             Objects.Add(spawn.Id, spawn);
-            
-            SetOnGridObjects(((int)spawn.X, (int)spawn.Y), spawn);
+            SetOnGridObjects(targetPos, spawn);
         }
         toSpawn.Clear();
     }
 
-    private void SetOnGridObjects((int,int) pos, BaseOBject obj)
+    private void SetOnGridObjects(Vector2D pos, BaseOBject obj)
     {
         if(!GridObjects.TryGetValue(pos, out var gridPos))
             GridObjects.Add(pos, []);
         GridObjects[pos].Add(obj);
     }
-    private void RemoveFromGridObjects((int,int) pos, BaseOBject obj)
+    private void RemoveFromGridObjects(Vector2D pos, BaseOBject obj)
     {
         if(!GridObjects.TryGetValue(pos, out var gridPos)) return;
         if(gridPos.FirstOrDefault(p => p.Id == obj.Id) is null) return;

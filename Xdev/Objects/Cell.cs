@@ -1,12 +1,11 @@
 using System.Drawing;
-using Formula.Interfaces;
 using Formula.Objects;
 
 public class Cell : BaseOBject
 {
     private bool alive = false;
 
-    public Cell(int x, int y, IBehavior? behavior = null, string? label = null, bool alive = false) : base(x, y, Color.White, behavior, label)
+    public Cell(int x, int y, IBehavior? behavior = null, string? label = null, bool alive = false) : base(x, y, 0, Color.White, behavior, label)
     {
         Alive = alive;
     }

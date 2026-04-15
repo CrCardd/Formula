@@ -54,8 +54,9 @@ public partial class Kingdon
     => _NeighborObjects<T>(x,y,diagonal).ToList();
     public IReadOnlyCollection<BaseOBject> NeighborObjects(double x, double y, bool diagonal=false) => NeighborObjects<BaseOBject>(x,y);
 
-    public IEnumerable<Vector2D> GetGrid(double x, double y, bool diagonal=false)
+    public Dictionary<Vector2D, IReadOnlyCollection<T>> GetGrid<T>(double x, double y, bool diagonal=false) where T : BaseOBject
     {
+        Dictionary<Vector2D, IReadOnlyCollection<T>> positions = [];
         int startX = (int)x-1;
         int startY = (int)y-1;
 
@@ -65,7 +66,11 @@ public partial class Kingdon
                 if(!diagonal && i!=y && j!=x) continue;
                 if(!isValid(j,i)) continue;
 
-                yield return new(j,i);
+                positions.Add((j,i), GetPlaceOrDefault<T>(j,i) ?? []);
             }
+        return positions;
     }
+    public Dictionary<Vector2D, IReadOnlyCollection<BaseOBject>> GetGrid(double x, double y, bool diagonal=false)
+    => GetGrid<BaseOBject>(x,y,diagonal);
+
 }

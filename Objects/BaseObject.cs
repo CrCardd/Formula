@@ -86,15 +86,13 @@ public class BaseOBject
     {
         tMatrix = new Matrix();
         tMatrix.Translate((int)Position.X * Size, (int)Position.Y * Size);
-        Flags &= ~DirtyFlags.MoveDirty;
     }
     
     private SolidBrush brush = new(Color.White);
     public void Draw(Graphics g)
     {
         brush.Color = color;
-        if (Flags.HasFlag(DirtyFlags.MoveDirty))
-            RecalculatePosition();
+        RecalculatePosition();
         var old = g.Transform;
         g.Transform = tMatrix!;
         g.FillRectangle(brush, 0, 0, E.Width, E.Height);

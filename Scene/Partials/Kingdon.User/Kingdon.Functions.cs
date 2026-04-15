@@ -54,8 +54,7 @@ partial class Kingdon
         DestroyAllObjects();
         MouseDown = null;
         MouseUp = null;
-        MousePaint = null;
-        MousePaint = null;
+        MouseMove = null;
         GlobalHotkeys.Clear();
     }
     

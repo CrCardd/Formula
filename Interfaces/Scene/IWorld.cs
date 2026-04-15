@@ -14,18 +14,15 @@ public interface IWorld
     int Height {get;}
     IReadOnlyCollection<BaseOBject> GetObjects { get; }
     
-    public bool isFree(double x, double y);
     public bool isValid(double x, double y);
-    public BaseOBject GetPlace(double x, double y);
-    public T GetPlace<T>(double x, double y) where T : BaseOBject;
-    public BaseOBject? GetPlaceOrDefault(double x, double y);
-    public T? GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject;
-    public Vector2D? GetRandom4FreeNeighborPlace(double x, double y);
-    public Vector2D? GetRandom8FreeNeighborPlace(double x, double y);
-    public IEnumerable<T> NNeighborCells<T>(double x, double y, int n=1) where T : BaseOBject;
-    public IEnumerable<BaseOBject> NNeighborCells(double x, double y, int n);
-    public IEnumerable<T> NeighborCells<T>(double x, double y, bool diagonal=false) where T : BaseOBject;
-    public IEnumerable<BaseOBject> NeighborCells(double x, double y, bool diagonal=false);
+    public IReadOnlyCollection<BaseOBject> GetPlace(double x, double y);
+    public IReadOnlyCollection<T> GetPlace<T>(double x, double y) where T : BaseOBject;
+    public IReadOnlyCollection<BaseOBject>? GetPlaceOrDefault(double x, double y);
+    public IReadOnlyCollection<T>? GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject;
+    public IReadOnlyCollection<T> RadiusAreaObjects<T>(double x, double y, int n=1) where T : BaseOBject;
+    public IReadOnlyCollection<BaseOBject> RadiusAreaObjects(double x, double y, int n);
+    public IReadOnlyCollection<T> NeighborObjects<T>(double x, double y, bool diagonal=false) where T : BaseOBject;
+    public IReadOnlyCollection<BaseOBject> NeighborObjects(double x, double y, bool diagonal=false);
     public IEnumerable<Vector2D> GetGrid(double x, double y, bool diagonal=false);
 
     public void ResetWorld();

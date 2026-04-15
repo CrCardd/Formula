@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Formula.Interfaces;
 
@@ -20,6 +21,10 @@ public class MouseArgs(MouseEventArgs e, IWorld world, Vector2D lastPosition)
         var diff = LastPosition - Position;
         return diff.X * diff.X + diff.Y * diff.Y;
     }
-    public BaseOBject? TargetObject() => world.GetPlaceOrDefault(Position.X,Position.Y);
-    public T? TargetObject<T>() where T : BaseOBject => world.GetPlaceOrDefault<T>(Position.X,Position.Y);
+    public IReadOnlyCollection<BaseOBject> TargetObjectOrDefault() => world.GetPlaceOrDefault(Position.X,Position.Y)
+    ?? throw new Exception("-> TargetObjectOrDefault <- | There is no objects in this position");
+    public IReadOnlyCollection<T> TargetObjectOrDefault<T>() where T : BaseOBject => world.GetPlaceOrDefault<T>(Position.X,Position.Y)
+    ?? throw new Exception("-> TargetObjectOrDefault<T> <- | There is no objects in this position");
+    public IReadOnlyCollection<BaseOBject> TargetObject() => world.GetPlace(Position.X,Position.Y);
+    public IReadOnlyCollection<T> TargetObject<T>() where T : BaseOBject => world.GetPlace<T>(Position.X,Position.Y);
 }

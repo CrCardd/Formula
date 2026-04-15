@@ -10,7 +10,7 @@ namespace Formula.Scene;
 partial class Kingdon
 {
     public Dictionary<Guid, BaseOBject> Objects = [];
-    private Dictionary<(int,int), BaseOBject> GridObjects = [];
+    private Dictionary<(int,int), List<BaseOBject>> GridObjects = [];
     
     public void MoveObjects()
     {   
@@ -32,13 +32,12 @@ partial class Kingdon
             }
 
             var targetPos = ((int)move.X, (int)move.Y);
-            if (GridObjects.TryGetValue(targetPos, out var occupant) && occupant != move)
-            {
-                move.RestorePosition();
-                continue;
-            }
-            GridObjects.Remove(((int)move.PrevPosition.X, (int)move.PrevPosition.Y));
-            GridObjects.Add(targetPos, move);
+            var prevPos = ((int)move.PrevPosition.X, (int)move.PrevPosition.Y);
+
+            RemoveFromGridObjects(prevPos,move);
+            SetOnGridObjects(targetPos, move);
+
+            move.Flags &= ~DirtyFlags.MoveDirty;
         }
         toMove.Clear();
     }
@@ -47,7 +46,7 @@ partial class Kingdon
         while(toDestroy.Count > 0)
         {
             var obj = toDestroy.Dequeue();
-            GridObjects.Remove(((int)obj.PrevPosition.X, (int)obj.PrevPosition.Y));
+            RemoveFromGridObjects(((int)obj.PrevPosition.X, (int)obj.PrevPosition.Y), obj);
             Objects.Remove(obj.Id);
         }
     }
@@ -56,33 +55,42 @@ partial class Kingdon
         while(toSpawn.Count > 0)
         {
             var spawn = toSpawn.Dequeue();
-            var targetPos = ((int)spawn.X, (int)spawn.Y);
-            if(GridObjects.Keys.Contains(targetPos)) continue;
+
             Objects.Add(spawn.Id, spawn);
-            GridObjects.Add(((int)spawn.X, (int)spawn.Y), spawn);
+            
+            SetOnGridObjects(((int)spawn.X, (int)spawn.Y), spawn);
         }
         toSpawn.Clear();
     }
 
-
-
-
-    public BaseOBject GetRealPlace(double x, double y) => GridObjects[((int)x, (int)y)];
-    public T GetRealPlace<T>(double x, double y) where T : BaseOBject => (GridObjects[((int)x, (int)y)] as T)!;
-    public BaseOBject? GetRealPlaceOrDefault(double x, double y) 
+    private void SetOnGridObjects((int,int) pos, BaseOBject obj)
     {
-        if (GridObjects.TryGetValue(((int)x, (int)y), out var obj)) return obj;
-        return null;
+        if(!GridObjects.TryGetValue(pos, out var gridPos))
+            GridObjects.Add(pos, []);
+        GridObjects[pos].Add(obj);
     }
-    public T? GetRealPlaceOrDefault<T>(double x, double y) where T : BaseOBject
+    private void RemoveFromGridObjects((int,int) pos, BaseOBject obj)
     {
-        if (GridObjects.TryGetValue(((int)x, (int)y), out var obj)) return obj as T;
-        return null;
-    }
-    public BaseOBject? GetRealPlace(Vector2D position)
-    {
-        if (GridObjects.TryGetValue(((int)position.X, (int)position.Y), out var obj)) return obj;
-        return null;
+        if(!GridObjects.TryGetValue(pos, out var gridPos)) return;
+        if(gridPos.FirstOrDefault(p => p.Id == obj.Id) is null) return;
+        gridPos.Remove(gridPos.First(p => p.Id == obj.Id));
     }
 
+    
+
+
+    public IReadOnlyCollection<T> GetRealPlace<T>(double x, double y) where T : BaseOBject 
+    => GridObjects[((int)x, (int)y)].Select(pos => (T)pos).ToList();
+    public IReadOnlyCollection<BaseOBject> GetRealPlace(double x, double y) => GetRealPlace<BaseOBject>(x,y);
+
+    public IReadOnlyCollection<T>? GetRealPlaceOrDefault<T>(double x, double y) where T : BaseOBject
+    {
+        if (GridObjects.TryGetValue(((int)x, (int)y), out var pos)) 
+            return pos
+                .Where(p => typeof(T) == p.GetType())
+                .Select(p => (T)p)
+                .ToList();
+        return null;
+    }
+    public IReadOnlyCollection<BaseOBject>? GetRealPlaceOrDefault(double x, double y) => GetRealPlaceOrDefault<BaseOBject>(x,y);
 }

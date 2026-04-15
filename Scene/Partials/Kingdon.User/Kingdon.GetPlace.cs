@@ -1,26 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Formula.Objects;
 
 namespace Formula.Scene;
 
 public partial class Kingdon
 {
-    public BaseOBject GetPlace(double x, double y) => GridObjects[((int)x, (int)y)].Shadow!;
-    public BaseOBject? GetPlace(Vector2D position)
-    {
-        if (GridObjects.TryGetValue(((int)position.X, (int)position.Y), out var obj)) return obj.Shadow;
-        return null;
-    }
-    public T GetPlace<T>(double x, double y) where T : BaseOBject => (GridObjects[((int)x, (int)y)].Shadow as T)!;
+    public IReadOnlyCollection<T> GetPlace<T>(double x, double y) where T : BaseOBject 
+    => GridObjects[((int)x, (int)y)]
+        .Where(pos => typeof(T) == pos.GetType())
+        .Select(pos => (T)pos.Shadow!).ToList()!;
+    public IReadOnlyCollection<BaseOBject> GetPlace(double x, double y) => GetPlace<BaseOBject>(x,y);
 
-    public BaseOBject? GetPlaceOrDefault(double x, double y) 
+    public IReadOnlyCollection<T>? GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject
     {
-        if (GridObjects.TryGetValue(((int)x, (int)y), out var obj)) return obj.Shadow;
+        if (GridObjects.TryGetValue(((int)x, (int)y), out var pos)) 
+            return pos
+                .Where(p => typeof(T) == p.GetType())
+                .Select(p => (T)p.Shadow!)
+                .ToList();
         return null;
     }
-    public T? GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject
-    {
-        if (GridObjects.TryGetValue(((int)x, (int)y), out var obj)) return obj.Shadow as T;
-        return null;
-    }
+    public IReadOnlyCollection<BaseOBject>? GetPlaceOrDefault(double x, double y) => GetPlaceOrDefault<BaseOBject>(x,y);
 
 }

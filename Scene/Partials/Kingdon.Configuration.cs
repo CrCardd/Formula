@@ -41,10 +41,12 @@ partial class Kingdon
     public void Loop(object? sender, EventArgs e)
     {
         foreach(var obj in Objects.Values) obj.SyncShadow();
+        CaptureInputSnapshot();
         foreach(var obj in Objects.Values) obj.Update(this, (double)timer.Interval/1000.0);
         MoveObjects();
         DestroyObjects();
         SpawnObjects();
+        
 
         this.Invalidate();
     }

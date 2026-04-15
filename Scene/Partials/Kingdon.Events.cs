@@ -11,8 +11,6 @@ namespace Formula.Scene;
 partial class Kingdon
 {
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Action<IWorld, MouseArgs>? MousePaint {get;set;}
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public new Action<IWorld, MouseArgs>? MouseDown {get;set;}
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public new Action<IWorld, MouseArgs>? MouseUp {get;set;}
@@ -21,55 +19,15 @@ partial class Kingdon
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Dictionary<Keys, Action<IUser>> GlobalHotkeys {get;set;} = [];
 
-    private bool isMousePressed = false;
-    private HashSet<(int,int)> passed = [];
     private Vector2D lastPosition = new(-1,-1);
-    protected override void OnMouseDown(MouseEventArgs e)
+    protected override void OnMouseDown(MouseEventArgs e) => BaseMouseAction(MouseDown, e);
+    protected override void OnMouseUp(MouseEventArgs e) => BaseMouseAction(MouseUp, e);
+    protected override void OnMouseMove(MouseEventArgs e) => BaseMouseAction(MouseMove, e);    
+    private void BaseMouseAction(Action<IWorld, MouseArgs>? action, MouseEventArgs e)
     {
-        var pos = Coords(e);
-        var ma = new MouseArgs(e,this,lastPosition);
-        isMousePressed = true;
-        InvokeOnMousePaint(ma);
-
-        MouseDown?.Invoke(this,ma);
-        lastPosition = pos;
-    }
-    protected override void OnMouseUp(MouseEventArgs e)
-    {
-        var pos = Coords(e);
-        var ma = new MouseArgs(e,this,lastPosition);
-        MouseUp?.Invoke(this,ma);
-
-        isMousePressed = false;
-        passed = [];
-        lastPosition = pos;
-    }
-    protected override void OnMouseMove(MouseEventArgs e)
-    {
-        var pos = Coords(e);
-        var ma = new MouseArgs(e,this,lastPosition);
-        MouseMove?.Invoke(this,ma);
-
-
-        if(lastPosition == pos)
-            return;
-        InvokeOnMousePaint(ma);
-        lastPosition = pos;
-    }
-    public Vector2D Coords(MouseEventArgs e) => new(e.X / BaseOBject.Size, e.Y / BaseOBject.Size);
-    public void InvokeOnMousePaint(MouseArgs e)
-    {
-        if(!isMousePressed)
-            return;
-
-        if(!isValid(e.Position.X,e.Position.Y))
-            return;
-        if(passed.Contains(((int)e.Position.X, (int)e.Position.Y)))
-            return;
-        
-        var rawWorld = new RawKingdon(this);
-        MousePaint?.Invoke(rawWorld,e);
-        if(!isFree(e.Position.X,e.Position.Y)) passed.Add(((int)e.Position.X, (int)e.Position.Y));
+        var ma = new MouseArgs(e,new RawKingdon(this),lastPosition);
+        action?.Invoke(this,ma);
+        lastPosition = new(e.X / BaseOBject.Size, e.Y / BaseOBject.Size);
     }
 
 
@@ -96,8 +54,22 @@ partial class Kingdon
         return false;
     }
 
+
     [DllImport("user32.dll")]
-    private static extern short GetAsyncKeyState(Keys vKey);
+    private static extern short GetAsyncKeyState(int vKey);
+
+    private readonly bool[] snapshotKeys = new bool[256];
+
+    public void CaptureInputSnapshot()
+    {
+        for (int i = 0; i < 256; i++)
+            snapshotKeys[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
+    }
+
     public bool IsKeyDown(Keys key)
-    => (GetAsyncKeyState(key) & 0x8000) != 0;
+    {
+        int k = (int)key;
+        if (k < 0 || k > 255) return false;
+        return snapshotKeys[k];
+    }
 }

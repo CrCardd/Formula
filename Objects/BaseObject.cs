@@ -17,6 +17,7 @@ public class BaseOBject
 
     private int version = 0;
     private Vector2D position;
+    private int z = 0;
     private Vector2D prevPosition;
     private Color color;
     private IBehavior? behavior;
@@ -36,8 +37,14 @@ public class BaseOBject
 
     public double X {get => Position.X; [MemberNotNull(nameof(Position))]set{Position = new(value, Y);}}
     public double Y {get => Position.Y; [MemberNotNull(nameof(Position))]set{Position = new(X, value);}}
-    public int Z = 0;
-
+    public int Z {
+        get => z;
+        set
+        {
+            z = value;
+            PosChange();    
+        }
+    }
     private Vector2D Position {get => position;
         set{
             position = value;
@@ -120,7 +127,7 @@ public class BaseOBject
         Label = label;
         X = x;
         Y = y;
-        Z=0;
+        Z=z;
         Color = (Color)color;
         RecalculatePosition();
     }

@@ -13,16 +13,13 @@ static class Program
     [STAThread]
     static void Main()
     {
-        int w = 50;
+        int w = 40;
         int h = w;
 
         BaseOBject.Size = 15;
-        var engine = Kingdon.GetInstance(w,h,2,"NOMELEGAL");
+        var engine = Kingdon.GetInstance(w,h,1);
         
-        // SetGlobalMove(engine);
-        // SetGameOfLife(engine);
-        // SetSandJoke(engine);
-        // SetLig4(engine);
+        SetGameOfLife(engine);
         
         engine.Run();
     }

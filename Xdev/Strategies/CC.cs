@@ -9,7 +9,7 @@ public class CC : Behavior<Cell>
         if(!world.GetFlag("run"))
             return;
 
-        int n = world.RadiusAreaObjects<Cell>(obj.X, obj.Y).Count(n => n.Alive);
+        int n = world.NeighborObjects<Cell>(obj.X, obj.Y, true).Count(n => n.Alive);
         if(obj.Alive)
         {
             if(n < 2 || n > 5)

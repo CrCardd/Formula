@@ -30,13 +30,17 @@ partial class Kingdon
         return instance;
     }
 
-    public void New(BaseOBject obj){
+    public T New<T>(T obj) where T : BaseOBject
+    {
         
-        if (obj.X < 0 || obj.X >= Width) return;
-        if (obj.Y < 0 || obj.Y >= Height) return;
+        if (obj.X < 0 || obj.X >= Width) throw new Exception("Invalid position to spawn!");
+        if (obj.Y < 0 || obj.Y >= Height) throw new Exception("Invalid position to spawn!");
 
         toSpawn.Enqueue(obj);
+        return obj;
     }
+    public BaseOBject New(BaseOBject obj) => New<BaseOBject>(obj);
+    
     public void Destroy(BaseOBject obj) => toDestroy.Enqueue(obj);
     public IReadOnlyCollection<BaseOBject> GetObjects => Objects.Values.ToList();
     public void DestroyAllObjects()

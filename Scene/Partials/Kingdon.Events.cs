@@ -1,5 +1,6 @@
 using Formula.Interfaces;
 using Formula.Objects;
+using Formula.Scene.GetPlaceStrategies;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,15 +20,23 @@ partial class Kingdon
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Dictionary<Keys, Action<IUser>> GlobalHotkeys {get;set;} = [];
 
-    private Vector2D lastPosition = new(-1,-1);
+    private MouseArgs? MouseArgs = null;
+
     protected override void OnMouseDown(MouseEventArgs e) => BaseMouseAction(MouseDown, e);
     protected override void OnMouseUp(MouseEventArgs e) => BaseMouseAction(MouseUp, e);
     protected override void OnMouseMove(MouseEventArgs e) => BaseMouseAction(MouseMove, e);    
     private void BaseMouseAction(Action<IWorld, MouseArgs>? action, MouseEventArgs e)
     {
-        var ma = new MouseArgs(e,new RawKingdon(this),lastPosition);
+        this.getplace = new GetReal(this);
+        var ma = new MouseArgs(e,this,MouseArgs);
         action?.Invoke(this,ma);
-        lastPosition = new(e.X / BaseOBject.Size, e.Y / BaseOBject.Size);
+        this.getplace = new GetShadow(this);
+        
+        if(MouseArgs?.Position != ma.Position)
+            this.Invalidate();
+
+        MouseArgs = ma;
+        
     }
 
 
@@ -57,15 +66,12 @@ partial class Kingdon
 
     [DllImport("user32.dll")]
     private static extern short GetAsyncKeyState(int vKey);
-
     private readonly bool[] snapshotKeys = new bool[256];
-
     public void CaptureInputSnapshot()
     {
         for (int i = 0; i < 256; i++)
             snapshotKeys[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
     }
-
     public bool IsKeyDown(Keys key)
     {
         int k = (int)key;

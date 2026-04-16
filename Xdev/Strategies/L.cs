@@ -10,7 +10,7 @@ public class L : Behavior
         var pos = world.GetPlaceOrDefault(obj.X, obj.Y+m);
         if(
             world.isValid(obj.X, obj.Y+m) 
-            && (pos is null || pos?.Count < world.Depth
+            && (pos is null || pos?.Count() < world.Depth
             && (!pos.Any() || pos.Any(p => p.Z != obj.Z)))
         )
             obj.Y+=m;

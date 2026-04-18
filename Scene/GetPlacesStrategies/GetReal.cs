@@ -18,7 +18,7 @@ public class GetReal(Kingdon kingdon) : IGetPlace
             for(int j=startX; j<=x+1;j++)
             {
                 if(!diagonal && i!=y && j!=x) continue;
-                if(!kingdon.isValid(j,i)) continue;
+                if(!isValid(j,i)) continue;
 
                 positions.Add((j,i), GetPlaceOrDefault<T>(j,i) ?? []);
             }
@@ -58,7 +58,7 @@ public class GetReal(Kingdon kingdon) : IGetPlace
             {
                 if (!diagonal && i != cy && j != cx) continue;
                 if (i == cy && j == cx) continue;
-                if (!kingdon.isValid(j, i)) continue;
+                if (!isValid(j, i)) continue;
 
                 var pos = GetPlaceOrDefault<T>(j, i);
                 if (pos is null) continue;
@@ -80,7 +80,7 @@ public class GetReal(Kingdon kingdon) : IGetPlace
             for(int j=startX; j<=x+n;j++)
             {
                 if(i==y && j==x) continue;
-                if(!kingdon.isValid(i,j)) continue;
+                if(!isValid(i,j)) continue;
                 var pos = GetPlaceOrDefault<T>(j,i);
                 if(pos is null) continue;
 
@@ -90,4 +90,7 @@ public class GetReal(Kingdon kingdon) : IGetPlace
         }
     } 
     public IEnumerable<BaseOBject> RadiusAreaObjects(double x, double y, int n) => RadiusAreaObjects<BaseOBject>(x,y,n);
+
+    public bool isValid(double x, double y) => x>=0 && x<kingdon.Width && y>=0 && y <kingdon.Height;
+    public bool isValid(Vector2D position) => isValid(position.X,position.Y);
 }

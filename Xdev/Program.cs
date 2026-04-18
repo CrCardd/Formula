@@ -13,13 +13,17 @@ static class Program
     [STAThread]
     static void Main()
     {
-        int w = 40;
+        int w = 150;
         int h = w;
 
-        BaseOBject.Size = 15;
+        BaseOBject.Size = 7;
         var engine = Kingdon.GetInstance(w,h,1);
         
-        SetGameOfLife(engine);
+        var p1 = engine.New(new(10,12,0,Color.Red,new M()));
+        var p2 = engine.New(new(10,10,1,Color.Blue,new MM()));
+        engine.GlobalHotkeys.Add(Keys.Space, (world) => world.ApplyAll(o => o.Z=Math.Abs(p1.Z-1)));
+        
+        engine.MouseDown = (world,e) => world.New(new BaseOBject(e.Position.X, e.Position.Y, behavior: new M()));
         
         engine.Run();
     }

@@ -1,8 +1,10 @@
-﻿namespace Formula.Scene;
+﻿using System.ComponentModel;
+
+namespace Formula.Scene;
 
 partial class Kingdon
 {
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
     protected override void Dispose(bool disposing)
     {
         if (disposing && (components != null))

@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Formula.Interfaces;
 using Formula.Objects;
@@ -15,14 +14,10 @@ partial class Kingdon
     private static readonly object _padlock = new object();
 
     private readonly Timer timer; 
-    private IGetPlace getplace;
-    private static Kingdon Instance
-    {
-        get
-        {
-            throw new InvalidOperationException("Kingdon must be initialized by GetInstance(w, h) before access.");
-        }
-    }
+    private IGetPlace getPlace;
+    private IGetPlace getShadowPlace;
+    private IGetPlace getRealPlace;
+
     private Kingdon(int w, int h, int? z=null, string label="screen")
     {   
         this.InitializeComponent();
@@ -35,7 +30,9 @@ partial class Kingdon
         this.z = z;
         this.Text = label;
 
-        this.getplace = new GetShadow(this);
+        this.getRealPlace = new GetReal(this);
+        this.getShadowPlace = new GetShadow(this);
+        this.getPlace = this.getShadowPlace;
 
         this.ClientSize = new Size(BaseOBject.Size * w , BaseOBject.Size * h);
     

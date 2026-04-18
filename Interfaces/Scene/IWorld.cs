@@ -18,8 +18,6 @@ public interface IWorld : IGetPlace
     
     IReadOnlyCollection<BaseOBject> GetObjects { get; }
     
-    public bool isValid(double x, double y);
-    public bool isValid(Vector2D position);
 
     public void SetFlag(string key, bool value);
     public bool GetFlag(string key);

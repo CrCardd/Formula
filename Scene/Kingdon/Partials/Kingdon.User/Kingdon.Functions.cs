@@ -18,6 +18,7 @@ partial class Kingdon
     public new int Height => h;
     public int? Depth => z;
     
+    
     public static IControl GetInstance(int w, int h, int? z=null, string? label = null)
     {
         if (instance == null)
@@ -27,6 +28,7 @@ partial class Kingdon
                         ApplicationConfiguration.Initialize();   
                         instance = new Kingdon(w,h,z,label ?? "Screen");
                     }
+        
         return instance;
     }
 

@@ -5,7 +5,7 @@ using Formula.Interfaces;
 
 namespace Formula.Objects;
 
-public class MouseArgs(MouseEventArgs e, IWorld world, MouseArgs? lastMouse)
+public class MouseArgs(MouseEventArgs e, IGetPlace world, MouseArgs? lastMouse)
 {
     public bool IsKeyDown(Keys key) => (Control.ModifierKeys & key) == key;
     public readonly MouseButtons Button = e.Button;

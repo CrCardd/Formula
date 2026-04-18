@@ -1,6 +1,5 @@
 using Formula.Interfaces;
 using Formula.Objects;
-using Formula.Scene.GetPlaceStrategies;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,26 +10,28 @@ namespace Formula.Scene;
 
 partial class Kingdon
 {
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public new Action<IWorld, MouseArgs>? MouseDown {get;set;}
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public new Action<IWorld, MouseArgs>? MouseUp {get;set;}
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public new Action<IWorld, MouseArgs>? MouseMove {get;set;}
+    public abstract void OnMouseDown(IWorld world, MouseArgs e);
+    public abstract void OnMouseUp(IWorld world, MouseArgs e);
+    public abstract void OnMouseMove(IWorld world, MouseArgs e);
+    
+    
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Dictionary<Keys, Action<IUser>> GlobalHotkeys {get;set;} = [];
 
     private MouseArgs? MouseArgs = null;
 
-    protected override void OnMouseDown(MouseEventArgs e) => BaseMouseAction(MouseDown, e);
-    protected override void OnMouseUp(MouseEventArgs e) => BaseMouseAction(MouseUp, e);
-    protected override void OnMouseMove(MouseEventArgs e) => BaseMouseAction(MouseMove, e);    
+    public void BaseMouseDown(MouseEventArgs e) => BaseMouseAction(OnMouseDown, e);
+
+
+    public void BaseMouseUp(MouseEventArgs e) => BaseMouseAction(OnMouseUp, e);
+    public void BaseMouseMove(MouseEventArgs e) => BaseMouseAction(OnMouseMove, e);    
+
     private void BaseMouseAction(Action<IWorld, MouseArgs>? action, MouseEventArgs e)
     {
-        this.getplace = new GetReal(this);
-        var ma = new MouseArgs(e,this,MouseArgs);
+        this.getPlace = this.getRealPlace;
+        var ma = new MouseArgs(e,this.getRealPlace, MouseArgs);
         action?.Invoke(this,ma);
-        this.getplace = new GetShadow(this);
+        this.getPlace = this.getShadowPlace;
         
         if(MouseArgs?.Position != ma.Position)
             this.Invalidate();
@@ -40,9 +41,8 @@ partial class Kingdon
     }
 
 
-    protected override void OnKeyDown(KeyEventArgs e)
+    private void BaseOnKeyDown(KeyEventArgs e)
     {
-        base.OnKeyDown(e);
         if (GlobalHotkeys.TryGetValue(e.KeyCode, out var action))
             action.Invoke(this);
     }
@@ -67,11 +67,12 @@ partial class Kingdon
     [DllImport("user32.dll")]
     private static extern short GetAsyncKeyState(int vKey);
     private readonly bool[] snapshotKeys = new bool[256];
-    public void CaptureInputSnapshot()
+    private void CaptureInputSnapshot()
     {
         for (int i = 0; i < 256; i++)
             snapshotKeys[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
     }
+    
     public bool IsKeyDown(Keys key)
     {
         int k = (int)key;

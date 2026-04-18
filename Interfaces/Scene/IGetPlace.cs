@@ -15,4 +15,7 @@ public interface IGetPlace
     public IEnumerable<BaseOBject> NeighborObjects(double x, double y, bool diagonal=false);
     public Dictionary<Vector2D, IEnumerable<T>> GetGrid<T>(double x, double y, bool diagonal=false) where T : BaseOBject;
     public Dictionary<Vector2D, IEnumerable<BaseOBject>> GetGrid(double x, double y, bool diagonal=false);
+
+    public bool isValid(double x, double y);
+    public bool isValid(Vector2D position);
 }

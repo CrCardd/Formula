@@ -5,5 +5,10 @@ namespace Formula.Scene;
 
 public abstract partial class Kingdon : IControl
 {
-    public void Run() => Application.Run(this);   
+    public void Run()
+    {
+        var nav = Navigation.Get();
+        nav.Push(this);
+        Application.Run(new MainForm(nav));   
+    } 
 }

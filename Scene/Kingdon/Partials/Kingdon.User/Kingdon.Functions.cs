@@ -11,26 +11,6 @@ partial class Kingdon
     private Queue<BaseOBject> toDestroy = [];
     private Queue<BaseOBject> toSpawn = [];
     
-    private readonly int w;
-    private readonly int h;
-    private readonly int? z;
-    public new int Width => w;
-    public new int Height => h;
-    public int? Depth => z;
-    
-    
-    public static IControl GetInstance(int w, int h, int? z=null, string? label = null)
-    {
-        if (instance == null)
-                lock (_padlock)
-                    if (instance == null)
-                    {
-                        ApplicationConfiguration.Initialize();   
-                        instance = new Kingdon(w,h,z,label ?? "Screen");
-                    }
-        
-        return instance;
-    }
 
     public T New<T>(T obj) where T : BaseOBject
     {
@@ -50,21 +30,12 @@ partial class Kingdon
         Objects = new();
         GridObjects = new();
     }
+    
     public void ApplyAll<T>(Action<T> apply) where T : BaseOBject
     {
         foreach(var o in Objects.Values)
             if(o is T t)
                 apply(t);   
     }
-    public void ApplyAll(Action<BaseOBject> apply) => ApplyAll<BaseOBject>(apply);
-
-    public void ResetWorld()
-    {
-        DestroyAllObjects();
-        MouseDown = null;
-        MouseUp = null;
-        MouseMove = null;
-        GlobalHotkeys.Clear();
-    }
-    
+    public void ApplyAll(Action<BaseOBject> apply) => ApplyAll<BaseOBject>(apply);    
 }

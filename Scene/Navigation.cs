@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Formula.Interfaces;
 using Formula.Objects;
@@ -6,7 +7,8 @@ namespace Formula.Scene;
 
 public class Navigation : INavigation
 {
-    public EventManager EventManager {get;set;} = new();
+    public event Action? OnPush;
+    public event Action? OnPop;
 
 
     private Kingdon? last = null;
@@ -36,7 +38,7 @@ public class Navigation : INavigation
     public void Pop()
     {
         last = stack.Pop();
-        EventManager.Notify("pop");
+        OnPop?.Invoke();
     } 
     public void Push(Kingdon scene)
     {
@@ -46,7 +48,7 @@ public class Navigation : INavigation
             last = null;
 
         stack.Push(scene);
-        EventManager.Notify("push");
+        OnPush?.Invoke();
     }
 
     public Kingdon? Last() => last;

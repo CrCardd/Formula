@@ -10,19 +10,17 @@ namespace Formula.Scene;
 
 partial class Kingdon
 {
-    public abstract void OnMouseDown(IWorld world, MouseArgs e);
-    public abstract void OnMouseUp(IWorld world, MouseArgs e);
-    public abstract void OnMouseMove(IWorld world, MouseArgs e);
+    public virtual void OnMouseDown(IWorld world, MouseArgs e){}
+    public virtual void OnMouseUp(IWorld world, MouseArgs e){}
+    public virtual void OnMouseMove(IWorld world, MouseArgs e){}
+    public virtual void OnKeyDown(KeyEventArgs e){}
     
-    
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Dictionary<Keys, Action<IUser>> GlobalHotkeys {get;set;} = [];
 
-    private MouseArgs? MouseArgs = null;
+    
+
+    private MouseArgs? MouseArgs = null;    
 
     public void BaseMouseDown(MouseEventArgs e) => BaseMouseAction(OnMouseDown, e);
-
-
     public void BaseMouseUp(MouseEventArgs e) => BaseMouseAction(OnMouseUp, e);
     public void BaseMouseMove(MouseEventArgs e) => BaseMouseAction(OnMouseMove, e);    
 
@@ -34,18 +32,11 @@ partial class Kingdon
         this.getPlace = this.getShadowPlace;
         
         if(MouseArgs?.Position != ma.Position)
-            this.Invalidate();
+            OnReload?.Invoke();
 
         MouseArgs = ma;
-        
     }
 
-
-    private void BaseOnKeyDown(KeyEventArgs e)
-    {
-        if (GlobalHotkeys.TryGetValue(e.KeyCode, out var action))
-            action.Invoke(this);
-    }
 
     private Dictionary<string, bool> Flags = [];
     public void SetFlag(string key, bool value)

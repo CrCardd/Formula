@@ -9,32 +9,34 @@ using Formula.Scene.GetPlaceStrategies;
 namespace Formula.Scene;
 
 partial class Kingdon
-{
-    private static Kingdon? instance = null;
-    private static readonly object _padlock = new object();
+{   
+    private Timer? timer; 
 
-    private readonly Timer timer; 
-    private IGetPlace getPlace;
-    private IGetPlace getShadowPlace;
-    private IGetPlace getRealPlace;
+    private IGetPlace? getPlace;
+    private IGetPlace? getShadowPlace;
+    private IGetPlace? getRealPlace;
 
-    private Kingdon(int w, int h, int? z=null, string label="screen")
-    {   
-        this.InitializeComponent();
-        this.FormBorderStyle = FormBorderStyle.FixedSingle;
-        this.MaximizeBox = false;
-        this.DoubleBuffered = true;
+    
+    public int Width {get;set;}
+    public int Height {get;set;}
+    public int? Depth {get;set;}
+    
+    public string Text {get;set;} = "Screen";
 
-        this.w = w;
-        this.h = h;
-        this.z = z;
-        this.Text = label;
+    public event Action? OnReload;
+
+
+    public void Initialize(int w, int h, int? z=null, string? label=null)
+    {
+        this.Width = w;
+        this.Height = h;
+        this.Depth = z;
+        if(label is not null)
+            this.Text = label;
 
         this.getRealPlace = new GetReal(this);
         this.getShadowPlace = new GetShadow(this);
         this.getPlace = this.getShadowPlace;
-
-        this.ClientSize = new Size(BaseOBject.Size * w , BaseOBject.Size * h);
     
         Timer t = new();
         this.timer = t;
@@ -47,22 +49,22 @@ partial class Kingdon
     {
         foreach(var obj in Objects.Values) obj.SyncShadow();
         CaptureInputSnapshot();
-        foreach(var obj in Objects.Values) obj.Update(this, (double)timer.Interval/1000.0);
+        if(timer is not null)
+            foreach(var obj in Objects.Values) obj.Update(this, (double)timer.Interval/1000.0);
         MoveObjects();
         DestroyObjects();
         SpawnObjects();
 
-        this.Invalidate();
+        OnReload?.Invoke();
     }
 
-    protected override void OnPaint(PaintEventArgs e)
+    public void OnPaint(PaintEventArgs e, Control control)
     {
-        base.OnPaint(e);
         foreach (var obj in GridObjects.Values.SelectMany(x => x).OrderBy(x => x.Z))
             obj.Draw(e.Graphics);
 
 
-        var p = this.PointToClient(Control.MousePosition);
+        var p = control.PointToClient(Control.MousePosition);
         int x = p.X / BaseOBject.Size;
         int y = p.Y / BaseOBject.Size;
         if(isValid(x,y))

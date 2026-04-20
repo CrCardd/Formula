@@ -13,12 +13,6 @@ static class Program
     [STAThread]
     static void Main()
     {
-        int w = 150;
-        int h = w;
-
-        BaseOBject.Size = 7;
-        var engine = Kingdon.GetInstance(w,h,1);
-        
         var p1 = engine.New(new(10,12,0,Color.Red,new M()));
         var p2 = engine.New(new(10,10,1,Color.Blue,new MM()));
         engine.GlobalHotkeys.Add(Keys.Space, (world) => world.ApplyAll(o => o.Z=Math.Abs(p1.Z-1)));

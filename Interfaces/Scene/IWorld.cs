@@ -12,9 +12,10 @@ public interface IWorld : IGetPlace
     public T New<T>(T obj) where T : BaseOBject;
     public void Destroy(BaseOBject obj);
 
-    int Width {get;}
-    int Height {get;}
-    int? Depth {get;}
+    int Width {get;set;}
+    int Height {get;set;}
+    int? Depth {get;set;}
+    string Text {get;set;}
     
     IReadOnlyCollection<BaseOBject> GetObjects { get; }
     

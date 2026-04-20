@@ -3,12 +3,15 @@ using Formula.Interfaces;
 
 namespace Formula.Scene;
 
-public abstract partial class Kingdon : IControl
+public partial class SceneMap : IControl
 {
+    protected INavigation Nav = Navigation.Get();
     public void Run()
     {
         var nav = Navigation.Get();
+        var MainForm = new MainForm(nav);
+        MainForm.InitializeComponent(this.Width, this.Height);
         nav.Push(this);
-        Application.Run(new MainForm(nav));   
-    } 
+        Application.Run(MainForm);
+    }
 }

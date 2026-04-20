@@ -8,27 +8,19 @@ using System.Windows.Forms;
 
 namespace Formula.Scene;
 
-partial class Kingdon
+partial class SceneMap
 {
-    public virtual void OnMouseDown(IWorld world, MouseArgs e){}
-    public virtual void OnMouseUp(IWorld world, MouseArgs e){}
-    public virtual void OnMouseMove(IWorld world, MouseArgs e){}
-    public virtual void OnKeyDown(KeyEventArgs e){}
-    
-
-    
-
     private MouseArgs? MouseArgs = null;    
 
     public void BaseMouseDown(MouseEventArgs e) => BaseMouseAction(OnMouseDown, e);
     public void BaseMouseUp(MouseEventArgs e) => BaseMouseAction(OnMouseUp, e);
     public void BaseMouseMove(MouseEventArgs e) => BaseMouseAction(OnMouseMove, e);    
 
-    private void BaseMouseAction(Action<IWorld, MouseArgs>? action, MouseEventArgs e)
+    private void BaseMouseAction(Action<MouseArgs>? action, MouseEventArgs e)
     {
         this.getPlace = this.getRealPlace;
-        var ma = new MouseArgs(e,this.getRealPlace, MouseArgs);
-        action?.Invoke(this,ma);
+        var ma = new MouseArgs(e,this.getRealPlace!, MouseArgs);
+        action?.Invoke(ma);
         this.getPlace = this.getShadowPlace;
         
         if(MouseArgs?.Position != ma.Position)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Formula.Interfaces;
@@ -5,9 +6,8 @@ using Formula.Objects;
 
 namespace Formula.Scene.GetPlaceStrategies;
 
-public class GetShadow(Kingdon kingdon) : IGetPlace
+public class GetShadow(SceneMap sceneMap) : IInteract
 {
-    private Kingdon kingdon = kingdon;
     public Dictionary<Vector2D, IEnumerable<T>> GetGrid<T>(double x, double y, bool diagonal = false) where T : BaseOBject
     {
         Dictionary<Vector2D, IEnumerable<T>> positions = [];
@@ -29,13 +29,13 @@ public class GetShadow(Kingdon kingdon) : IGetPlace
 
 
     public IEnumerable<T> GetPlace<T>(double x, double y) where T : BaseOBject
-    => kingdon.GridObjects[((int)x, (int)y)].Select(pos => (T)pos.Shadow!).ToList();
+    => sceneMap.GridObjects[((int)x, (int)y)].Select(pos => (T)pos.Shadow!).ToList();
     public IEnumerable<BaseOBject> GetPlace(double x, double y) => GetPlace<BaseOBject>(x,y);
 
 
     public IEnumerable<T>? GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject
     {
-        if (kingdon.GridObjects.TryGetValue(((int)x, (int)y), out var pos)) 
+        if (sceneMap.GridObjects.TryGetValue(((int)x, (int)y), out var pos)) 
             return pos
                 .Where(p => typeof(T) == p.GetType())
                 .Select(p => (T)p.Shadow!)
@@ -90,6 +90,21 @@ public class GetShadow(Kingdon kingdon) : IGetPlace
     } 
     public IEnumerable<BaseOBject> RadiusAreaObjects(double x, double y, int n) => RadiusAreaObjects<BaseOBject>(x,y,n);
 
-    public bool isValid(double x, double y) => x>=0 && x<kingdon.Width && y>=0 && y < kingdon.Height;
+    public bool isValid(double x, double y) => x>=0 && x<sceneMap.Width && y>=0 && y < sceneMap.Height;
     public bool isValid(Vector2D position) => isValid(position.X,position.Y);
+
+
+
+    public T New<T>(T obj) where T : BaseOBject
+    {
+        
+        if (obj.X < 0 || obj.X >= sceneMap.Width) throw new Exception("Invalid position to spawn!");
+        if (obj.Y < 0 || obj.Y >= sceneMap.Height) throw new Exception("Invalid position to spawn!");
+
+        sceneMap.toSpawn.Enqueue(obj);
+        return obj;
+    }
+    public BaseOBject New(BaseOBject obj) => New<BaseOBject>(obj);
+    
+    public void Destroy(BaseOBject obj) => sceneMap.toDestroy.Enqueue(obj);
 }

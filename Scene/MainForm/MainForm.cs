@@ -3,9 +3,10 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Formula.Interfaces;
+using Formula.Objects;
 using Formula.Scene;
 
-public class MainForm(
+internal class MainForm(
     INavigation nav
 ) : Form
 {
@@ -19,14 +20,10 @@ public class MainForm(
             components.Dispose();
         base.Dispose(disposing);
     }
-    public void InitializeComponent(int width, int height)
+    internal void InitializeComponent(int width, int height)
     {
-        var nav = Navigation.Get();
-        this.timer.Tick += nav.Peek().Loop;
-        this.timer.Start();
-
-        nav.OnPop += Update;
-        nav.OnPush += Update;
+        nav.OnPop += this.UpdateForm;
+        nav.OnPush += this.UpdateForm;
 
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
         this.MaximizeBox = false;
@@ -34,10 +31,10 @@ public class MainForm(
         this.components = new Container();
         this.AutoScaleMode = AutoScaleMode.Font;
         
-        this.ClientSize = new Size(width, height);
+        this.ClientSize = new Size(width*BaseOBject.Size, height*BaseOBject.Size);
     }
 
-    private new void Update()
+    private void UpdateForm()
     {
         this.timer.Stop();
         if(nav.Last() != null)
@@ -52,14 +49,35 @@ public class MainForm(
             // ele já está inscrito nessa tela (resolvido com gambiarra)
             nav.Peek().OnReload += this.Invalidate;
             this.timer.Tick += nav.Peek().Loop;
+            this.Text = nav.Peek().Text;
         }
         this.timer.Start();
     }
 
     protected override void OnPaint(PaintEventArgs e)
     {
-        if(nav.HasValue())
-            nav.Peek().OnPaint(e, this);
+        if(!nav.HasValue())
+            return;
+
+        var scene = nav.Peek();
+
+        var p = this.PointToClient(MousePosition);
+        int x = p.X / BaseOBject.Size;
+        int y = p.Y / BaseOBject.Size;
+
+        var g = BaseOBject.Size/6;
+
+        nav.Peek().OnPaint(e);
+
+        if(scene.isValid(x,y))
+            e.Graphics.DrawRectangle(
+                new Pen(Color.Black, g), 
+                x*BaseOBject.Size+(g/2),
+                y*BaseOBject.Size+(g/2),
+                BaseOBject.Size-(g), 
+                BaseOBject.Size-(g)
+            );
+        
     }
 
     protected override void OnKeyDown(KeyEventArgs e)

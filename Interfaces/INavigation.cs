@@ -8,10 +8,10 @@ public interface INavigation
     event Action? OnPush;
     event Action? OnPop;
 
-    void Push(Kingdon scene);
+    void Push(SceneMap scene);
     void Pop();
-    Kingdon? Last();
-    Kingdon Peek();
+    SceneMap? Last();
+    SceneMap Peek();
     bool HasValue();
-    public T Peek<T>() where T : Kingdon;
+    public T Peek<T>() where T : SceneMap;
 }

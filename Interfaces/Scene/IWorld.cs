@@ -6,11 +6,8 @@ using Formula.Objects;
 
 namespace Formula.Interfaces;
 
-public interface IWorld : IGetPlace
+public interface IWorld : IInteract
 {
-    public BaseOBject New(BaseOBject obj);
-    public T New<T>(T obj) where T : BaseOBject;
-    public void Destroy(BaseOBject obj);
 
     int Width {get;set;}
     int Height {get;set;}

@@ -3,7 +3,7 @@ using Formula.Objects;
 
 namespace Formula.Interfaces;
 
-public interface IGetPlace
+public interface IInteract
 {
     public IEnumerable<BaseOBject> GetPlace(double x, double y);
     public IEnumerable<T> GetPlace<T>(double x, double y) where T : BaseOBject;
@@ -18,4 +18,9 @@ public interface IGetPlace
 
     public bool isValid(double x, double y);
     public bool isValid(Vector2D position);
+
+    public BaseOBject New(BaseOBject obj);
+
+    public T New<T>(T obj) where T : BaseOBject;
+    public void Destroy(BaseOBject obj);
 }

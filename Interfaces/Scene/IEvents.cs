@@ -7,9 +7,9 @@ namespace Formula.Interfaces;
 
 public interface IEvents
 {
-    public void OnMouseDown(IWorld world, MouseArgs e);
-    public void OnMouseUp(IWorld world, MouseArgs e);
-    public void OnMouseMove(IWorld world, MouseArgs e);
+    public void OnMouseDown(MouseArgs e);
+    public void OnMouseUp(MouseArgs e);
+    public void OnMouseMove(MouseArgs e);
     public void OnKeyDown(KeyEventArgs e);
 
     public void ApplyAll(Action<BaseOBject> apply);

@@ -7,12 +7,12 @@ using Formula.Objects;
 
 namespace Formula.Scene;
 
-partial class Kingdon
+partial class SceneMap
 {
     public Dictionary<Guid, BaseOBject> Objects = [];
     public Dictionary<Vector2D, List<BaseOBject>> GridObjects = [];
     
-    public void MoveObjects()
+    internal void MoveObjects()
     {   
         var toMove = Objects.Values.Where(o => (o.Flags & DirtyFlags.MoveDirty) != DirtyFlags.None).ToList();
 
@@ -49,16 +49,21 @@ partial class Kingdon
         }
         toMove.Clear();
     }
-    public void DestroyObjects()
+    internal void DestroyObjects()
     {
         while(toDestroy.Count > 0)
         {
             var obj = toDestroy.Dequeue();
-            RemoveFromGridObjects(((int)obj.PrevPosition.X, (int)obj.PrevPosition.Y), obj);
-            Objects.Remove(obj.Id);
+            ApplyDestroy(obj, ((int)obj.PrevPosition.X, (int)obj.PrevPosition.Y));
         }
     }
-    public void SpawnObjects()
+    internal void ApplyDestroy(BaseOBject obj, Vector2D pos)
+    {
+        RemoveFromGridObjects(pos, obj);
+        Objects.Remove(obj.Id);
+    }
+
+    internal void SpawnObjects()
     {
         while(toSpawn.Count > 0)
         {
@@ -71,6 +76,11 @@ partial class Kingdon
             SetOnGridObjects(targetPos, spawn);
         }
         toSpawn.Clear();
+    }
+    internal void ApplySpawn(BaseOBject obj, Vector2D pos)
+    {
+        Objects.Add(obj.Id, obj);
+        SetOnGridObjects(pos, obj);
     }
 
     private void SetOnGridObjects(Vector2D pos, BaseOBject obj)

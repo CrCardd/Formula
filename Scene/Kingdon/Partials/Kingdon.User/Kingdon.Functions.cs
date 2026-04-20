@@ -6,10 +6,10 @@ using Formula.Objects;
 
 namespace Formula.Scene;
 
-partial class Kingdon
+partial class SceneMap
 {
-    private Queue<BaseOBject> toDestroy = [];
-    private Queue<BaseOBject> toSpawn = [];
+    public Queue<BaseOBject> toDestroy = [];
+    public Queue<BaseOBject> toSpawn = [];
     
 
     public T New<T>(T obj) where T : BaseOBject

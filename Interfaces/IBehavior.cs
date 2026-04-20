@@ -1,10 +1,11 @@
 using System;
+using System.Windows.Forms;
 using Formula.Interfaces;
 using Formula.Objects;
 
 public interface IBehavior
 {
-    void Execute(BaseOBject obj, IWorld world, double t);
+    public void Execute(BaseOBject obj, IWorld world, double t);
 }
 public abstract class Behavior<T> : IBehavior where T : BaseOBject
 {

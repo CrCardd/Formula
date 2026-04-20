@@ -8,13 +8,13 @@ using Formula.Scene.GetPlaceStrategies;
 
 namespace Formula.Scene;
 
-partial class Kingdon
+partial class SceneMap
 {   
     private Timer? timer; 
 
-    private IGetPlace? getPlace;
-    private IGetPlace? getShadowPlace;
-    private IGetPlace? getRealPlace;
+    private IInteract? getPlace;
+    private IInteract? getShadowPlace;
+    private IInteract? getRealPlace;
 
     
     public int Width {get;set;}
@@ -25,8 +25,8 @@ partial class Kingdon
 
     public event Action? OnReload;
 
-
-    public void Initialize(int w, int h, int? z=null, string? label=null)
+    
+    protected void Initialize(int w, int h, int? z=null, string? label=null)
     {
         this.Width = w;
         this.Height = h;
@@ -37,7 +37,7 @@ partial class Kingdon
         this.getRealPlace = new GetReal(this);
         this.getShadowPlace = new GetShadow(this);
         this.getPlace = this.getShadowPlace;
-    
+
         Timer t = new();
         this.timer = t;
         timer.Interval = 16; // ~60 FPS
@@ -55,25 +55,14 @@ partial class Kingdon
         DestroyObjects();
         SpawnObjects();
 
+        OnLoop();
+
         OnReload?.Invoke();
     }
 
-    public void OnPaint(PaintEventArgs e, Control control)
+    internal void OnPaint(PaintEventArgs e)
     {
         foreach (var obj in GridObjects.Values.SelectMany(x => x).OrderBy(x => x.Z))
             obj.Draw(e.Graphics);
-
-
-        var p = control.PointToClient(Control.MousePosition);
-        int x = p.X / BaseOBject.Size;
-        int y = p.Y / BaseOBject.Size;
-        if(isValid(x,y))
-            e.Graphics.DrawRectangle(
-                new Pen(Color.Black, BaseOBject.Size/7), 
-                x * BaseOBject.Size,
-                y * BaseOBject.Size,
-                BaseOBject.Size, 
-                BaseOBject.Size
-            );
     }
 }

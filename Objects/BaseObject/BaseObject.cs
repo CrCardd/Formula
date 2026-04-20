@@ -3,12 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Windows.Forms;
 using Formula.Enum;
 using Formula.Scene;
 
 namespace Formula.Objects;
 
-public class BaseOBject
+public partial class BaseOBject
 {
     #region Private constants
     public static int Size {get;set;} = 15;
@@ -51,7 +52,7 @@ public class BaseOBject
             PosChange();
         }
     }
-    public Vector2D PrevPosition {get => prevPosition; private set{prevPosition = value;}}
+    internal Vector2D PrevPosition {get => prevPosition; private set{prevPosition = value;}}
 
     private void ColorChange()
         => Flags |= DirtyFlags.RenderDirty;
@@ -72,7 +73,7 @@ public class BaseOBject
         }
     }
     
-    public DirtyFlags Flags {get => dirtyFlag; 
+    internal DirtyFlags Flags {get => dirtyFlag; 
         [MemberNotNull(nameof(dirtyFlag))]
         set{
             dirtyFlag = value;
@@ -82,21 +83,20 @@ public class BaseOBject
 
     public string? Label {get;set;}
 
-    
-    public BaseOBject? Shadow {get;set;}
+    internal BaseOBject? Shadow {get;set;}
 
     #endregion
     #region Engine Methods
 
     [MemberNotNull(nameof(tMatrix))]
-    public void RecalculatePosition()
+    private void RecalculatePosition()
     {
         tMatrix = new Matrix();
         tMatrix.Translate((int)Position.X * Size, (int)Position.Y * Size);
     }
     
     private SolidBrush brush = new(Color.White);
-    public void Draw(Graphics g)
+    internal void Draw(Graphics g)
     {
         brush.Color = color;
         RecalculatePosition();
@@ -105,9 +105,12 @@ public class BaseOBject
         g.FillRectangle(brush, 0, 0, e.Width, e.Height);
         g.Transform = old;
     }
-    public void RestorePosition() => Position = PrevPosition;
-    public void Update(Kingdon engine, double time) => behavior?.Execute(this, engine, time);    
-    public void SyncShadow()
+    internal void RestorePosition() => Position = PrevPosition;
+    internal void Update(SceneMap engine, double time)
+    {
+        behavior?.Execute(this, engine, time);    
+    }
+    internal void SyncShadow()
     {
         PrevPosition = Position;
         if(Shadow == null) Shadow = (BaseOBject)this.MemberwiseClone();
@@ -127,7 +130,7 @@ public class BaseOBject
         Label = label;
         X = x;
         Y = y;
-        Z=z;
+        Z = z;
         Color = (Color)color;
         RecalculatePosition();
     }
@@ -145,21 +148,5 @@ public class BaseOBject
         Color = (Color)color;
         RecalculatePosition();
     }
-
-    [MemberNotNull(nameof(X))]
-    [MemberNotNull(nameof(Y))]
-    public void SetPosition(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-    [MemberNotNull(nameof(Y))]
-    [MemberNotNull(nameof(X))]
-    public void SetPosition(Vector2D position)
-    {
-        X = position.X;
-        Y = position.Y;
-    }
-
     #endregion
 }

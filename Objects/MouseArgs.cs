@@ -5,7 +5,7 @@ using Formula.Interfaces;
 
 namespace Formula.Objects;
 
-public class MouseArgs(MouseEventArgs e, IGetPlace world, MouseArgs? lastMouse)
+public class MouseArgs(MouseEventArgs e, IInteract world, MouseArgs? lastMouse)
 {
     public bool IsKeyDown(Keys key) => (Control.ModifierKeys & key) == key;
     public readonly MouseButtons Button = e.Button;
@@ -21,10 +21,9 @@ public class MouseArgs(MouseEventArgs e, IGetPlace world, MouseArgs? lastMouse)
         var diff = LastPosition - Position;
         return diff.X * diff.X + diff.Y * diff.Y;
     }
-    public IEnumerable<BaseOBject> TargetObjectOrDefault() => world.GetPlaceOrDefault(Position.X,Position.Y)
-    ?? throw new Exception("-> TargetObjectOrDefault <- | There is no objects in this position");
-    public IEnumerable<T> TargetObjectOrDefault<T>() where T : BaseOBject => world.GetPlaceOrDefault<T>(Position.X,Position.Y)
-    ?? throw new Exception("-> TargetObjectOrDefault<T> <- | There is no objects in this position");
-    public IEnumerable<BaseOBject> TargetObject() => world.GetPlace(Position.X,Position.Y);
-    public IEnumerable<T> TargetObject<T>() where T : BaseOBject => world.GetPlace<T>(Position.X,Position.Y);
+    
+    public IEnumerable<BaseOBject> TargetObject() => world.GetPlaceOrDefault(Position.X,Position.Y)
+    ?? [];
+    public IEnumerable<T> TargetObject<T>() where T : BaseOBject => world.GetPlaceOrDefault<T>(Position.X,Position.Y)
+    ?? [];
 }

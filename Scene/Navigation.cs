@@ -11,7 +11,7 @@ public class Navigation : INavigation
     public event Action? OnPop;
 
 
-    private Kingdon? last = null;
+    private SceneMap? last = null;
 
     private static INavigation? _instance;
     private static INavigation instance
@@ -25,13 +25,13 @@ public class Navigation : INavigation
         set => _instance = value;
     }
     private Navigation(){}
-    public static INavigation Get() => instance;
+    internal static INavigation Get() => instance;
 
 
-    private Stack<Kingdon> stack = [];
+    private Stack<SceneMap> stack = [];
 
-    public Kingdon Peek() => stack.Peek();
-    public T Peek<T>() where T : Kingdon => (T)stack.Peek();
+    public SceneMap Peek() => stack.Peek();
+    public T Peek<T>() where T : SceneMap => (T)stack.Peek();
 
     public bool HasValue() => stack.Count != 0;
 
@@ -40,7 +40,7 @@ public class Navigation : INavigation
         last = stack.Pop();
         OnPop?.Invoke();
     } 
-    public void Push(Kingdon scene)
+    public void Push(SceneMap scene)
     {
         if(HasValue())
             last = Peek();
@@ -51,5 +51,5 @@ public class Navigation : INavigation
         OnPush?.Invoke();
     }
 
-    public Kingdon? Last() => last;
+    public SceneMap? Last() => last;
 }

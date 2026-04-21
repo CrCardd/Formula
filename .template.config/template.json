@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Cristian",
+  "name": "Formula Scene Map Template",
+  "identity": "Formula.Template",
+  "shortName": "formula",
+  "sourceName": "Formula",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}

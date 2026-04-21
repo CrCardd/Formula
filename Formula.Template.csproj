@@ -11,6 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="content\**\*" Exclude="content\**\bin\**;content\**\obj\**" />
+    <Content Include=".template.config\template\**\*" Exclude=".template.config\template\**\bin\**;.template.config\template\**\obj\**" />
   </ItemGroup>
 </Project>

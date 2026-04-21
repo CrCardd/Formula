@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
 
-    <PackageId>Formula.Template</PackageId>
+    <PackageId>NAME</PackageId>
 
     <TargetFramework>net9.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>

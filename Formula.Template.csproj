@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Formula.Template</PackageId>
+    <Version>1.0.1</Version>
+    <Authors>Cristian</Authors>
+    <Description>Template for Formula.Engine.</Description>
+    
+    <PackageType>Template</PackageType>
+    
+    <TargetFramework>net9.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="content\**\*" Exclude="content\**\bin\**;content\**\obj\**;content\**\*.nupkg" />
+  </ItemGroup>
+</Project>

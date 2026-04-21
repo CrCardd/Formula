@@ -3,14 +3,12 @@
     <PackageType>Template</PackageType>
     <PackageId>Cristian.Formula.Templates</PackageId>
     <Version>1.0.0</Version>
-    <TargetFramework>net8.0</TargetFramework>
-    
-    <IncludeContentInPack>true</IncludeContentInPack>
+    <TargetFramework>net9.0</TargetFramework> <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <ContentTargetFolders>content</ContentTargetFolders>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include=".template.config\template\**\*" Exclude=".template.config\template\**\bin\**;.template.config\template\**\obj\**" />
+    <Content Include="content\**\*" Exclude="content\**\bin\**;content\**\obj\**" />
   </ItemGroup>
 </Project>

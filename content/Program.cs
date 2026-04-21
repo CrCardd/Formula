@@ -1,6 +1,3 @@
-using System;
-using Formula.Scene;
-
 static class Program
 {
     [STAThread]
@@ -8,7 +5,7 @@ static class Program
     {
         ApplicationConfiguration.Initialize();
 
-        var map = new Scene();
+        var map = new Scene1();
         map.Run();
     }
 }

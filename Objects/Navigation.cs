@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Formula.Interfaces;
-using Formula.Objects;
+using Formula.Scene;
 
-namespace Formula.Scene;
+namespace Formula.Objects;
 
 public class Navigation : INavigation
 {

@@ -11,42 +11,69 @@ partial class SceneMap
 {
     public Dictionary<Guid, BaseOBject> Objects = [];
     public Dictionary<Vector2D, List<BaseOBject>> GridObjects = [];
-    
+
+    private HashSet<Guid> processing = new(); // Para detectar ciclos
+
+    private void TryMove(BaseOBject obj, HashSet<BaseOBject> moved)
+    {
+
+        if (moved.Contains(obj)) return;
+        if (processing.Contains(obj.Id)) return;
+        
+        processing.Add(obj.Id);
+
+        if (obj.X < 0 || obj.X >= Width || obj.Y < 0 || obj.Y >= Height)
+        {
+            obj.RestorePosition();
+            processing.Remove(obj.Id);
+            return;
+        }
+
+        var targetPos = ((int)obj.X, (int)obj.Y);
+        var prevPos = ((int)obj.PrevPosition.X, (int)obj.PrevPosition.Y);
+
+        if (targetPos == prevPos)
+        {
+            obj.Flags &= ~DirtyFlags.MoveDirty;
+            moved.Add(obj);
+            processing.Remove(obj.Id);
+            return;
+        }
+
+        if (GridObjects.TryGetValue(targetPos, out var occupants) && occupants.Count > 0)
+        {
+            if (Depth is not null && occupants.Count >= Depth)
+            {
+                var currentOccupants = occupants.ToList();
+                foreach (var occupant in currentOccupants)
+                    if ((occupant.Flags & DirtyFlags.MoveDirty) != DirtyFlags.None) TryMove(occupant, moved);
+                    
+            }
+
+            if (Depth is not null && occupants.Count >= Depth)
+            {
+                obj.RestorePosition();
+                processing.Remove(obj.Id);
+                return;
+            }
+        }
+
+
+        RemoveFromGridObjects(prevPos, obj);
+        SetOnGridObjects(targetPos, obj);
+        
+        obj.Flags &= ~DirtyFlags.MoveDirty;
+        moved.Add(obj);
+        processing.Remove(obj.Id);
+    }
+        
     internal void MoveObjects()
     {   
         var toMove = Objects.Values.Where(o => (o.Flags & DirtyFlags.MoveDirty) != DirtyFlags.None).ToList();
+        HashSet<BaseOBject> moved = [];
 
         foreach(var move in toMove)
-        {
-
-            if (move.X < 0 || move.X >= Width || move.Y < 0 || move.Y >= Height)
-            {
-                throw new Exception($@"
-                =========Index out of map!=========
-                Object
-                X - {move.X,-5} | Y - {move.Y} 
-
-                Map
-                Width - {Width,-5} | Height - {Height} 
-                ");
-            }
-
-            var targetPos = ((int)move.X, (int)move.Y);
-            var prevPos = ((int)move.PrevPosition.X, (int)move.PrevPosition.Y);
-            if (
-                GridObjects.TryGetValue(targetPos, out var occupant) 
-                && (occupant.Contains(move)
-                || (Depth is not null && occupant.Count >= Depth))
-            )
-            {
-                move.RestorePosition();
-                continue;
-            }
-            RemoveFromGridObjects(prevPos,move);
-            SetOnGridObjects(targetPos, move);
-
-            move.Flags &= ~DirtyFlags.MoveDirty;
-        }
+            TryMove(move, moved);
         toMove.Clear();
     }
     internal void DestroyObjects()

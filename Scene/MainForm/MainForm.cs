@@ -67,7 +67,7 @@ internal class MainForm(
 
         var g = BaseOBject.Size/6;
 
-        nav.Peek().OnPaint(e);
+        nav.Peek().Draw(e);
 
         if(scene.isValid(x,y))
             e.Graphics.DrawRectangle(

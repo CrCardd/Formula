@@ -60,7 +60,7 @@ partial class SceneMap
         OnReload?.Invoke();
     }
 
-    internal void OnPaint(PaintEventArgs e)
+    internal void Draw(PaintEventArgs e)
     {
         foreach (var obj in GridObjects.Values.SelectMany(x => x).OrderBy(x => x.Z))
             obj.Draw(e.Graphics);

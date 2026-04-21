@@ -64,7 +64,7 @@ public class GetShadow(SceneMap sceneMap) : IInteract
                 if (pos is null) continue;
 
                 foreach (var obj in pos)
-                    yield return (T)obj.Shadow!;
+                    yield return obj;
             }
     }
     public IEnumerable<BaseOBject> NeighborObjects(double x, double y, bool diagonal = false)
@@ -85,7 +85,7 @@ public class GetShadow(SceneMap sceneMap) : IInteract
                 if(pos is null) continue;
 
                 foreach(var obj in pos)
-                    yield return (T)obj.Shadow!;
+                    yield return obj;
             }
         }
     } 

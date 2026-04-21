@@ -3,7 +3,7 @@
   <PropertyGroup>
    
     <!-- Only for dev mode -->
-    <!-- <OutputType>WinExe</OutputType> -->
+    <OutputType>WinExe</OutputType>
 
     <TargetFramework>net9.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>

@@ -95,7 +95,6 @@ public class GetShadow(SceneMap sceneMap) : IInteract
     public bool isValid(Vector2D position) => isValid(position.X,position.Y);
 
 
-
     public T New<T>(T obj) where T : BaseOBject
     {
         

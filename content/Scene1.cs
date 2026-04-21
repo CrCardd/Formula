@@ -1,3 +1,6 @@
+using Formula.Objects;
+using Formula.Scene;
+
 public class Scene1 : SceneMap
 {
     public Scene1()

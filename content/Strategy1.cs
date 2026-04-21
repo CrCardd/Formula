@@ -1,3 +1,6 @@
+using Formula.Interfaces;
+using Formula.Objects;
+
 public class Strategy1 : Behavior
 {
     public override void Execute(BaseOBject obj, IWorld world)

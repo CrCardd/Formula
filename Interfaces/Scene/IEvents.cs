@@ -12,6 +12,7 @@ public interface IEvents
     public void OnMouseMove(MouseArgs e);
     public void OnKeyDown(KeyEventArgs e);
 
+
     public void ApplyAll(Action<BaseOBject> apply);
     public void ApplyAll<T>(Action<T> apply) where T : BaseOBject;
     public void DestroyAllObjects();

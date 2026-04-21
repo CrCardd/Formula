@@ -33,4 +33,4 @@ jobs:
         run: dotnet pack content/NAME.csproj -o dist
 
       - name: Publish Template
-        run: dotnet nuget push dist/NAME.*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push dist/Formula.Template.*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json

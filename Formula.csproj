@@ -12,7 +12,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     
     <PackageId>Formula.Engine</PackageId>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <Authors>Cristian Cardoso</Authors>
     <Description>Minimalist engine for Design Patterns class.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

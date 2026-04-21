@@ -20,5 +20,10 @@
     <Nullable>enable</Nullable>
 
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="content\**" />
+    <EmbeddedResource Remove="content\**" />
+    <None Remove="content\**" />
+  </ItemGroup>
 
 </Project>

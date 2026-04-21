@@ -18,13 +18,13 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restaurar dependências
-        run: dotnet restore Formula.Template.csproj
+        run: dotnet restore Formula.csproj
 
       - name: Build do Projeto
-        run: dotnet build Formula.Template.csproj --configuration Release --no-restore
+        run: dotnet build Formula.csproj --configuration Release --no-restore
 
       - name: Criar Pacote NuGet
-        run: dotnet pack Formula.Template.csproj --configuration Release --no-build -o dist
+        run: dotnet pack Formula.csproj --configuration Release --no-build -o dist
 
       - name: Publicar no NuGet
         run: dotnet nuget push dist/*.nupkg --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

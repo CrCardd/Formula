@@ -1,0 +1,15 @@
+FAZER UM COMMIT E ROLLBACK
+
+
+
+CORRIGIR ORDEM DE PRIORIDADE DO MOVIMENTO
+
+
+*Cores e Estilização Dinâmica
+
+Undo/Redo
+
+SaveState
+
+
+**DistanceMovedSquared esqusiit

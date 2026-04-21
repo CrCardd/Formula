@@ -3,12 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Windows.Forms;
 using Formula.Enum;
 using Formula.Scene;
 
 namespace Formula.Objects;
 
-public class BaseOBject
+public partial class BaseOBject
 {
     #region Private constants
     public static int Size {get;set;} = 15;
@@ -17,13 +18,13 @@ public class BaseOBject
 
     private int version = 0;
     private Vector2D position;
+    private int z = 0;
     private Vector2D prevPosition;
     private Color color;
     private IBehavior? behavior;
     private DirtyFlags dirtyFlag;
     private Matrix tMatrix;
     private Rectangle e;
-    private string? label;
 
 
     #endregion
@@ -37,13 +38,21 @@ public class BaseOBject
 
     public double X {get => Position.X; [MemberNotNull(nameof(Position))]set{Position = new(value, Y);}}
     public double Y {get => Position.Y; [MemberNotNull(nameof(Position))]set{Position = new(X, value);}}
+    public int Z {
+        get => z;
+        set
+        {
+            z = value;
+            PosChange();    
+        }
+    }
     private Vector2D Position {get => position;
         set{
             position = value;
             PosChange();
         }
     }
-    public Vector2D PrevPosition {get => prevPosition; private set{prevPosition = value;}}
+    internal Vector2D PrevPosition {get => prevPosition; private set{prevPosition = value;}}
 
     private void ColorChange()
         => Flags |= DirtyFlags.RenderDirty;
@@ -64,7 +73,7 @@ public class BaseOBject
         }
     }
     
-    public DirtyFlags Flags {get => dirtyFlag; 
+    internal DirtyFlags Flags {get => dirtyFlag; 
         [MemberNotNull(nameof(dirtyFlag))]
         set{
             dirtyFlag = value;
@@ -72,37 +81,36 @@ public class BaseOBject
         }
     }
 
-    public Rectangle E {get => e; private set {e = value;}}
-    
-    public string? Label {get => label;set{label = value;}}
-    
-    public BaseOBject? Shadow {get;set;}
+    public string? Label {get;set;}
+
+    internal BaseOBject? Shadow {get;set;}
 
     #endregion
     #region Engine Methods
 
     [MemberNotNull(nameof(tMatrix))]
-    public void RecalculatePosition()
+    private void RecalculatePosition()
     {
         tMatrix = new Matrix();
         tMatrix.Translate((int)Position.X * Size, (int)Position.Y * Size);
-        Flags &= ~DirtyFlags.MoveDirty;
     }
     
     private SolidBrush brush = new(Color.White);
-    public void Draw(Graphics g)
+    internal void Draw(Graphics g)
     {
         brush.Color = color;
-        if (Flags.HasFlag(DirtyFlags.MoveDirty))
-            RecalculatePosition();
+        RecalculatePosition();
         var old = g.Transform;
         g.Transform = tMatrix!;
-        g.FillRectangle(brush, 0, 0, E.Width, E.Height);
+        g.FillRectangle(brush, 0, 0, e.Width, e.Height);
         g.Transform = old;
     }
-    public void RestorePosition() => Position = PrevPosition;
-    public void Update(Kingdon engine, double time) => behavior?.Execute(this, engine, time);    
-    public void SyncShadow()
+    internal void RestorePosition() => Position = PrevPosition;
+    internal void Update(SceneMap engine, double time)
+    {
+        behavior?.Execute(this, engine, time);    
+    }
+    internal void SyncShadow()
     {
         PrevPosition = Position;
         if(Shadow == null) Shadow = (BaseOBject)this.MemberwiseClone();
@@ -112,47 +120,33 @@ public class BaseOBject
 
     #endregion
     #region User methods
-    public BaseOBject(double x, double y, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public BaseOBject(double x, double y, int z=0, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;
             
-        E = new Rectangle((int)x, (int)y, Size, Size);
+        e = new Rectangle((int)x, (int)y, Size, Size);
         Behavior = behavior;
         Label = label;
         X = x;
         Y = y;
+        Z = z;
         Color = (Color)color;
         RecalculatePosition();
     }
-    public BaseOBject(Vector2D position, Color? color=null, IBehavior? behavior=null, string? label=null)
+    public BaseOBject(Vector2D position, int z=0, Color? color=null, IBehavior? behavior=null, string? label=null)
     {
         if(color == null)
             color = Color.Green;
             
-        E = new Rectangle((int)position.X, (int)position.Y, Size, Size);
+        e = new Rectangle((int)position.X, (int)position.Y, Size, Size);
         Behavior = behavior;
         Label = label;
         X = position.X;
         Y = position.Y;
+        Z = z;
         Color = (Color)color;
         RecalculatePosition();
     }
-
-    [MemberNotNull(nameof(X))]
-    [MemberNotNull(nameof(Y))]
-    public void SetPosition(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-    [MemberNotNull(nameof(Y))]
-    [MemberNotNull(nameof(X))]
-    public void SetPosition(Vector2D position)
-    {
-        X = position.X;
-        Y = position.Y;
-    }
-
     #endregion
 }

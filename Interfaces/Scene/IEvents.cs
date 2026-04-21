@@ -7,10 +7,12 @@ namespace Formula.Interfaces;
 
 public interface IEvents
 {
-    public Dictionary<Keys, Action<IUser>> GlobalHotkeys {get;set;}    
-    public Action<IWorld, MouseArgs>? MousePaint {get;set;}
-    public Action<IWorld, MouseArgs>? MouseDown {get;set;}
-    public Action<IWorld, MouseArgs>? MouseUp {get;set;}
-    public Action<IWorld, MouseArgs>? MouseMove {get;set;}
+    public void OnMouseDown(MouseArgs e);
+    public void OnMouseUp(MouseArgs e);
+    public void OnMouseMove(MouseArgs e);
+    public void OnKeyDown(KeyEventArgs e);
 
+    public void ApplyAll(Action<BaseOBject> apply);
+    public void ApplyAll<T>(Action<T> apply) where T : BaseOBject;
+    public void DestroyAllObjects();
 }

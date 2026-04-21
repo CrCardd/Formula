@@ -37,7 +37,7 @@ public class GetReal(SceneMap sceneMap) : IInteract
     {
         if (sceneMap.GridObjects.TryGetValue(((int)x, (int)y), out var pos)) 
             return pos
-                .Where(p => typeof(T) == p.GetType())
+                .Where(p => p is T)
                 .Select(p => (T)p)
                 .ToList();
         return null;

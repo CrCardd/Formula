@@ -86,6 +86,12 @@ internal class MainForm(
             nav.Peek().OnKeyDown(e);
     }
 
+    protected override void OnMouseClick(MouseEventArgs e)
+    {
+        if(nav.HasValue())
+            nav.Peek().BaseMouseClick(e);
+    }
+
     protected override void OnMouseMove(MouseEventArgs e)
     {
         if(nav.HasValue())

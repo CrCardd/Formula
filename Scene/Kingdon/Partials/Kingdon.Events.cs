@@ -1,8 +1,7 @@
-using Formula.Interfaces;
 using Formula.Objects;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -12,11 +11,36 @@ partial class SceneMap
 {
     private MouseArgs? MouseArgs = null;    
 
-    public void BaseMouseDown(MouseEventArgs e) => BaseMouseAction(OnMouseDown, e);
-    public void BaseMouseUp(MouseEventArgs e) => BaseMouseAction(OnMouseUp, e);
-    public void BaseMouseMove(MouseEventArgs e) => BaseMouseAction(OnMouseMove, e);    
+    public void BaseMouseClick(MouseEventArgs e)
+    {
+        var ma = BaseMouseAction(OnMouseDown, e);
+        if(ma.TargetObject().Any())
+            foreach(var obj in ma.TargetObject())
+                obj.Behavior?.OnMouseClick(obj, ma);
+    } 
+    public void BaseMouseDown(MouseEventArgs e)
+    {
+        var ma = BaseMouseAction(OnMouseDown, e);
+        if(ma.TargetObject().Any())
+            foreach(var obj in ma.TargetObject())
+                obj.Behavior?.OnMouseDown(obj, ma);
+    } 
+    public void BaseMouseUp(MouseEventArgs e)
+    {
+        var ma = BaseMouseAction(OnMouseUp, e);
+        if(ma.TargetObject().Any())
+            foreach(var obj in ma.TargetObject())
+                obj.Behavior?.OnMouseUp(obj, ma);
+    } 
+    public void BaseMouseMove(MouseEventArgs e)
+    {
+        var ma = BaseMouseAction(OnMouseMove, e);
+        if(ma.TargetObject().Any())
+            foreach(var obj in ma.TargetObject())
+                obj.Behavior?.OnMouseHover(obj, ma);
+    } 
 
-    private void BaseMouseAction(Action<MouseArgs>? action, MouseEventArgs e)
+    private MouseArgs BaseMouseAction(Action<MouseArgs>? action, MouseEventArgs e)
     {
         this.getPlace = this.getRealPlace;
         var ma = new MouseArgs(e,this.getRealPlace!, MouseArgs);
@@ -27,8 +51,8 @@ partial class SceneMap
             OnReload?.Invoke();
 
         MouseArgs = ma;
+        return ma;
     }
-
 
     private Dictionary<string, bool> Flags = [];
     public void SetFlag(string key, bool value)
@@ -62,4 +86,5 @@ partial class SceneMap
         if (k < 0 || k > 255) return false;
         return snapshotKeys[k];
     }
+
 }

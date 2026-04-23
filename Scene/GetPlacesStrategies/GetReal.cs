@@ -8,6 +8,8 @@ namespace Formula.Scene.GetPlaceStrategies;
 
 public class GetReal(SceneMap sceneMap) : IInteract
 {
+    public MouseArgs? MouseArgs {get;set;} = sceneMap.MouseArgs;
+
     public Dictionary<Vector2D, IEnumerable<T>> GetGrid<T>(double x, double y, bool diagonal = false) where T : BaseOBject
     {
         Dictionary<Vector2D, IEnumerable<T>> positions = [];

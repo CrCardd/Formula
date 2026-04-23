@@ -88,7 +88,13 @@ public class GetReal(SceneMap sceneMap) : IInteract
     } 
     public IEnumerable<BaseOBject> RadiusAreaObjects(double x, double y, int n) => RadiusAreaObjects<BaseOBject>(x,y,n);
 
-    public bool isValid(double x, double y) => x>=0 && x<sceneMap.Width && y>=0 && y <sceneMap.Height;
+    public bool isValid(double x, double y) 
+    => 
+        x>=0 
+        && x<sceneMap.Width 
+        && y>=0 
+        && y <sceneMap.Height
+        && (sceneMap.Depth == null || GetPlace(x,y).Count() < sceneMap.Depth);
     public bool isValid(Vector2D position) => isValid(position.X,position.Y);
 
     public T New<T>(T obj) where T : BaseOBject

@@ -6,6 +6,7 @@ namespace Formula.Scene;
 public partial class SceneMap
 {
     public bool isValid(double x, double y) => getPlace!.isValid(x,y);
+    
     public bool isValid(Vector2D position) => isValid(position.X,position.Y);
 
     public IEnumerable<T> GetPlace<T>(double x, double y) where T : BaseOBject 

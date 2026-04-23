@@ -12,7 +12,6 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     </PropertyGroup>
 
-
   <ItemGroup>
     <Content Include="content\**\*" Exclude="content\**\bin\**;content\**\obj\**;content\**\*.nupkg" />
   </ItemGroup>

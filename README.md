@@ -117,6 +117,14 @@ Dentro dos blocos do seu SceneMap também é possível usar qualquer método que
     Pega todos os objetos a partir de um ponto, sem considerar o ponto passado, podendo controlar o raio de objetos que irá pegar através de n.
     Por exemplo, se n = 1, irá retornar no máximo 8 objetos (3x3 - o objeto do meio)
 
+#### IsKeyDown
+    Parâmetros
+    - Keys key
+
+    Retorno - bool
+
+    Verifica se uma tecla está pressionada
+
 
 # Behavior
 #### Execute - (override)

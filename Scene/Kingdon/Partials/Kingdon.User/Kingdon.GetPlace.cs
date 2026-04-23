@@ -13,8 +13,8 @@ public partial class SceneMap
     public IEnumerable<BaseOBject> GetPlace(double x, double y) 
     => GetPlace<BaseOBject>(x,y);
 
-    public IEnumerable<T>? GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject
-    => getPlace!.GetPlaceOrDefault<T>(x,y);
+    public IEnumerable<T> GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject
+    => getPlace!.GetPlace<T>(x,y);
     public IEnumerable<BaseOBject>? GetPlaceOrDefault(double x, double y) 
     => GetPlaceOrDefault<BaseOBject>(x,y);
 }

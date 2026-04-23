@@ -21,7 +21,7 @@ public class GetShadow(SceneMap sceneMap) : IInteract
                 if(!diagonal && i!=y && j!=x) continue;
                 if(!isValid(j,i)) continue;
 
-                positions.Add((j,i), GetPlaceOrDefault<T>(j,i) ?? []);
+                positions.Add((j,i), GetPlace<T>(j,i) ?? []);
             }
         return positions;
     }
@@ -29,12 +29,8 @@ public class GetShadow(SceneMap sceneMap) : IInteract
     => GetGrid<BaseOBject>(x,y,diagonal);
 
 
+
     public IEnumerable<T> GetPlace<T>(double x, double y) where T : BaseOBject
-    => sceneMap.GridObjects[((int)x, (int)y)].Select(pos => (T)pos.Shadow!).ToList();
-    public IEnumerable<BaseOBject> GetPlace(double x, double y) => GetPlace<BaseOBject>(x,y);
-
-
-    public IEnumerable<T>? GetPlaceOrDefault<T>(double x, double y) where T : BaseOBject
     {
         if (sceneMap.GridObjects.TryGetValue(((int)x, (int)y), out var pos)) 
             return pos
@@ -42,10 +38,10 @@ public class GetShadow(SceneMap sceneMap) : IInteract
                 .Where(p => p.Shadow != null)
                 .Select(p => (T)p.Shadow!)
                 .ToList();
-        return null;
+        return [];
     }
-    public IEnumerable<BaseOBject>? GetPlaceOrDefault(double x, double y)
-    => GetPlaceOrDefault<BaseOBject>(x,y);
+    public IEnumerable<BaseOBject> GetPlace(double x, double y)
+    => GetPlace<BaseOBject>(x,y);
 
     public IEnumerable<T> NeighborObjects<T>(double x, double y, bool diagonal=false) where T : BaseOBject
     {
@@ -61,7 +57,7 @@ public class GetShadow(SceneMap sceneMap) : IInteract
                 if (i == cy && j == cx) continue;
                 if (!isValid(j, i)) continue;
 
-                var pos = GetPlaceOrDefault<T>(j, i);
+                var pos = GetPlace<T>(j, i);
                 if (pos is null) continue;
 
                 foreach (var obj in pos)
@@ -82,7 +78,7 @@ public class GetShadow(SceneMap sceneMap) : IInteract
             {
                 if(i==y && j==x) continue;
                 if(!isValid(i,j)) continue;
-                var pos = GetPlaceOrDefault<T>(j,i);
+                var pos = GetPlace<T>(j,i);
                 if(pos is null) continue;
 
                 foreach(var obj in pos)

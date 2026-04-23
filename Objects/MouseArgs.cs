@@ -22,8 +22,8 @@ public class MouseArgs(MouseEventArgs e, IInteract world, MouseArgs? lastMouse)
         return diff.X * diff.X + diff.Y * diff.Y;
     }
     
-    public IEnumerable<BaseOBject> TargetObject() => world.GetPlaceOrDefault(Position.X,Position.Y)
+    public IEnumerable<BaseOBject> TargetObject() => world.GetPlace(Position.X,Position.Y)
     ?? [];
-    public IEnumerable<T> TargetObject<T>() where T : BaseOBject => world.GetPlaceOrDefault<T>(Position.X,Position.Y)
+    public IEnumerable<T> TargetObject<T>() where T : BaseOBject => world.GetPlace<T>(Position.X,Position.Y)
     ?? [];
 }

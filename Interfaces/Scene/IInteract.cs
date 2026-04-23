@@ -23,4 +23,6 @@ public interface IInteract
 
     public T New<T>(T obj) where T : BaseOBject;
     public void Destroy(BaseOBject obj);
+
+    public MouseArgs? MouseArgs {get;set;}
 }

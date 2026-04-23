@@ -9,7 +9,8 @@ namespace Formula.Scene;
 
 partial class SceneMap
 {
-    private MouseArgs? MouseArgs = null;    
+
+    public MouseArgs? MouseArgs {get;set;} = null;    
 
     public void BaseMouseClick(MouseEventArgs e)
     {

@@ -7,6 +7,8 @@ namespace Formula.Scene;
 public partial class SceneMap : IControl
 {
     protected INavigation Nav = Navigation.Get();
+
+    
     public void Run()
     {
         var nav = Navigation.Get();

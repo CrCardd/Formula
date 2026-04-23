@@ -1,6 +1,8 @@
 # SceneMap
 #### Construtor
-    Para iniciar uma nova cena basta criar um objeto que herda de "SceneMap", esse objeto precisa ter um construtor que chame o método "Initialize()", que recebe o tamanho da janela e a profundidade(opcional, se for nulo não terá limites)
+    Para iniciar uma nova cena basta criar um objeto que herda de "SceneMap", 
+    esse objeto precisa ter um construtor que chame o método "Initialize()", 
+    que recebe o tamanho da janela e a profundidade(opcional, se for nulo não terá limites)
 
 #### OnKeyDown - (override)
     Método para definir coisas para acontecerem quando uma tecla for pressionada
@@ -65,7 +67,9 @@ Dentro dos blocos do seu SceneMap também é possível usar qualquer método que
     - bool diagonal = false
 
     Retorno - Dictionary<Vector2D, IEnumerable<BaseObject>>
-    Para pegar uma área ao redor de uma posição passada, incluindo o ponto passado. Retorna um dicionário, sendo a posição a chave, e uma lista com os objetos presentes nessa posição o valor
+    Para pegar uma área ao redor de uma posição passada, incluindo o ponto passado. 
+    Retorna um dicionário, sendo a posição a chave, e uma lista com os objetos 
+    presentes nessa posição o valor
 
 #### GetObjects - método
     Retorno - IReadOnlyCollection<BaseObject>
@@ -88,7 +92,8 @@ Dentro dos blocos do seu SceneMap também é possível usar qualquer método que
 
     Retorno - bool
 
-    Indica se é uma posição válida ou não, se está dentro dos limites da tela e se cabe mais objetos naquela posição
+    Indica se é uma posição válida ou não, se está dentro dos limites da tela e 
+    se cabe mais objetos naquela posição
 
 #### NeighborObjects
     Parâmetros
@@ -97,7 +102,8 @@ Dentro dos blocos do seu SceneMap também é possível usar qualquer método que
     - bool diagonal = false
 
     Retorno - IEnumerable<BaseObject>
-    Retorna os vizinhos direto de uma posição, podendo pegar os cantos ou não (controlado por 'diagonal')
+    Retorna os vizinhos direto de uma posição, podendo pegar os cantos ou 
+    não (controlado por 'diagonal')
 
 #### New
     Parâmetros
@@ -114,7 +120,8 @@ Dentro dos blocos do seu SceneMap também é possível usar qualquer método que
 
     Retorno - IEnumerable<BaseObject>
 
-    Pega todos os objetos a partir de um ponto, sem considerar o ponto passado, podendo controlar o raio de objetos que irá pegar através de n.
+    Pega todos os objetos a partir de um ponto, sem considerar o ponto passado, podendo 
+    controlar o raio de objetos que irá pegar através de n.
     Por exemplo, se n = 1, irá retornar no máximo 8 objetos (3x3 - o objeto do meio)
 
 #### IsKeyDown

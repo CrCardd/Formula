@@ -11,8 +11,6 @@ public interface IEvents
     public void OnMouseUp(MouseArgs e);
     public void OnMouseMove(MouseArgs e);
     public void OnKeyDown(KeyEventArgs e);
-    public bool IsKeyDown(Keys key);
-
 
     public void ApplyAll(Action<BaseOBject> apply);
     public void ApplyAll<T>(Action<T> apply) where T : BaseOBject;

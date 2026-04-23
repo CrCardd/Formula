@@ -16,6 +16,9 @@ public interface IWorld : IInteract
     
     IReadOnlyCollection<BaseOBject> GetObjects { get; }
     
+    
+    public bool IsKeyDown(Keys key);
+
 
     public void SetFlag(string key, bool value);
     public bool GetFlag(string key);
